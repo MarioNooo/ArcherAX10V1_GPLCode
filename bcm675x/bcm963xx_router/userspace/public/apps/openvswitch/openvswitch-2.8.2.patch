@@ -1,0 +1,12 @@
+diff -Naur orig_openvswitch-2.8.2/Makefile.in openvswitch-2.8.2/Makefile.in
+--- orig_openvswitch-2.8.2/Makefile.in	2018-02-20 06:43:41.103315751 +0800
++++ openvswitch-2.8.2/Makefile.in	2019-01-24 10:50:35.341872076 +0800
+@@ -1733,7 +1733,7 @@
+ top_srcdir = @top_srcdir@
+ AUTOMAKE_OPTIONS = foreign subdir-objects
+ ACLOCAL_AMFLAGS = -I m4
+-SUBDIRS = datapath
++SUBDIRS = 
+ AM_CPPFLAGS = $(SSL_CFLAGS) $(am__append_1) -I $(top_srcdir)/include \
+ 	-I $(top_builddir)/include -I $(top_srcdir)/lib -I \
+ 	$(top_builddir)/lib $(SSL_INCLUDES) $(am__append_4)

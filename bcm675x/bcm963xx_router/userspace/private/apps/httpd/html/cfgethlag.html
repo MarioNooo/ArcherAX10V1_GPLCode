@@ -1,0 +1,288 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+
+<head>
+  <link rel="stylesheet" href="stylemain.css" type="text/css">
+  <link rel="stylesheet" href="colors.css" type="text/css">
+  <meta http-equiv="Pragma" content="no-cache">
+  <title> Ethernet LAG Settings</title>
+   <script language="javascript" src="util.js"></script>
+   <script language="javascript" src="portName.js"></script>
+   <script language="javascript">
+   
+			
+<!-- hide
+
+var buildvlm =  '<%ejGetOther(sysInfo, buildWanVlanMux)%>';
+var brdId = '<%ejGet(boardID)%>';
+var interfaceInfo = '<%ejGetOther(ethL2AllIntf, 0)%>';
+var interfaces = interfaceInfo.split('|');
+var configuredEthWanInfo = '<%ejGetOther(configuredWanEthForEthLag, 0)%>';
+var configuredEtgWanInterface= configuredEthWanInfo.split('|');
+var intfDisp = '';
+var brdIntf = '';
+
+
+function formLoad()
+{
+	with ( document.forms[0] ) {
+	}
+}
+
+
+function getSelect(item)
+{
+	var idx;
+	if (item.options.length > 0) {
+	    idx = item.selectedIndex;
+	    return item.options[idx].value;
+	}
+	else {
+		return '';
+    }
+}
+
+function submitSelect(item, name)
+{
+	return '&' + name + '=' + getSelect(item);
+}
+
+function enblWanSelectChange() {
+   with ( document.forms[0] ) {
+      var mode = enblWanSelect[enblWanSelect.selectedIndex].value;
+      switch (mode) {
+      }
+   }
+}
+
+
+function ethIntf1SelectChange() {
+   with ( document.forms[0] ) {
+      var mode = ethIntf1[ethIntf1.selectedIndex].value;
+      switch (mode) {
+      }
+   }
+}
+
+function ethIntf2SelectChange() {
+   with ( document.forms[0] ) {
+      var mode = ethIntf2[ethIntf2.selectedIndex].value;
+      switch (mode) {
+      }
+   }
+}
+
+function xmitHashPolicySelectChange() {
+   with ( document.forms[0] ) {
+      var mode = xmitHashPolicySelect[xmitHashPolicySelect.selectedIndex].value;
+      switch (mode) {
+      }
+   }
+}
+
+
+function lagModeSelectChange() {
+   with ( document.forms[0] ) {
+      var mode = lagModeSelect[lagModeSelect.selectedIndex].value;
+      switch (mode) {
+      }
+   }
+}
+
+function miiMonSelecChange() {
+   with ( document.forms[0] ) {
+      var mode = miiMonSelect[miiMonSelect.selectedIndex].value;
+      switch (mode) {
+      }
+   }
+}
+
+function lacpRateSelectChange() {
+   with ( document.forms[0] ) {
+      var mode = lacpRateSelect[lacpRateSelect.selectedIndex].value;
+      switch (mode) {
+      }
+   }
+}
+
+function btnBack() {
+   var code = 'location="ethLagCfg.cmd"';
+   eval(code);
+}
+
+
+function applyClick() {
+   var loc = 'ethLagCfg.cmd?action=add';
+
+   with ( document.forms[0] ) {
+	loc += submitSelect(enblWanSelect, 'enbWanEthLag');   	
+  	loc += submitSelect(ethIntf1, 'ethIfName1');   	
+	loc += submitSelect(ethIntf2, 'ethIfName2');   	
+	loc += submitSelect(lagModeSelect, 'ethLagMode');   	
+	loc += submitSelect(xmitHashPolicySelect, 'xmitHashPolicy');   	
+	loc += submitSelect(lacpRateSelect, 'lacp_rate');   	
+	loc += submitSelect(miiMonSelect, 'miimon');   	
+   }
+   loc += '&sessionKey=<%ejGetOther(sessionKey)%>';
+   var code = 'location="' + loc + '"';
+   eval(code);
+}
+
+// done hiding -->
+</script>
+
+
+<body onLoad="formLoad()">
+<blockquote>
+<form>
+  <b>Ethernet LAG Settings</b> 
+ <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
+
+ <table border="0" cellpadding="0" cellspacing="2" width="100%">
+  
+    <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
+    <tr>
+      <td width="40%">Select WAN or LAN Ethernet LAG Interface</td>
+      <td >
+
+ <script language="javascript">
+<!-- hide    
+      document.write("<select name='enblWanSelect' onchange='enblWanSelectChange();'>");
+      if (configuredEtgWanInterface != '')
+      {
+        document.write("<option value='WAN'>WAN");
+        document.write("<option value='LAN'>LAN");
+      }		
+	  else
+      {
+        document.write("<option value='LAN'>LAN");
+      }	
+      document.write(" </select>");
+// done hiding -->
+</script>
+		
+    </td>
+    </tr>
+    <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
+
+
+    <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
+    <tr>
+    <td width="40%">Select First Ethernet Interface</td>
+    <script language="javascript">
+    <!-- hide
+    {
+      document.write("<td><select name='ethIntf1' onChange='ethIntf1SelectChange();'>");
+      if (configuredEtgWanInterface != '')
+      {
+         for (i = 0; i < configuredEtgWanInterface.length; i++) 
+         {
+            brdIntf = brdId + '|' + configuredEtgWanInterface[i];
+            intfDisp = getUNameByLName(brdIntf);
+            brdIntf = '';
+            if ( isValidName(intfDisp) == true )
+               document.write("<option value='" + configuredEtgWanInterface[i] + "'>" + configuredEtgWanInterface[i] + "/" + intfDisp);
+         }
+      }
+      for (i = 0; i < interfaces.length; i++) 
+      {
+         brdIntf = brdId + '|' + interfaces[i];
+         intfDisp = getUNameByLName(brdIntf);
+         brdIntf = '';
+         document.write("<option value='" + interfaces[i] + "'>" + interfaces[i] + "/" + intfDisp);
+      }
+      document.writeln("    </select></td>")
+   }
+     // done hiding -->
+     </script>
+     </tr>
+     <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
+
+    <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
+    <tr>
+        <td width="40%">Select Second Ethernet Interface</td>
+    <script language="javascript">
+    <!-- hide
+    {
+      document.write("<td><select name='ethIntf2' onChange='ethIntf2SelectChange();'>");
+      for (i = 0; i < interfaces.length; i++) 
+      {
+         brdIntf = brdId + '|' + interfaces[i];
+         intfDisp = getUNameByLName(brdIntf);
+         brdIntf = '';
+         document.write("<option value='" + interfaces[i] + "'>" + interfaces[i] + "/" + intfDisp);
+      }
+     document.writeln("    </select></td>")
+   }
+     // done hiding -->
+     </script>
+     </tr>
+     <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
+
+     <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
+     <tr> 
+        <td width="40%">Select Ethernet LAG Mode</td>
+        <td><select name="lagModeSelect" onChange="lagModeSelectChange();">
+            <option value="802.3ad">802.3ad</option>
+            <option value="balance-rr">balance-rr</option>
+            <option value="balance-xor">balance-xor</option>
+          </select>
+        </td>
+     </tr>
+     <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
+
+    <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
+     <tr> 
+        <td width="40%">Select LAG Xmit Hash Policy</td>
+        <td><select name="xmitHashPolicySelect" onChange="xmitHashPolicySelectChange();">
+            <option value="encap3Plus4">encap3Plus4</option>
+            <option value="layer2">layer2</option>
+            <option value="layer2Plus3">layer2Plus3</option>
+            <option value="layer3Plus4">layer3Plus4</option>
+            <option value="encap2Plus3">encap2Plus3</option>
+          </select>
+        </td>
+     </tr>
+     <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
+
+    <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
+     <tr> 
+        <td width="40%">Select  LAG LACP Rate</td>
+        <td><select name="lacpRateSelect" onChange="lacpRateSelectChange();">
+            <option value="slow">slow</option>
+            <option value="fast">fast</option>
+          </select>
+        </td>
+     </tr>
+     <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
+
+    <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
+     <tr> 
+        <td width="40%">Select LAG MII Link Monitoring in ms</td>
+        <td><select name="miiMonSelect" onChange="miiMonSelectChange();">
+            <option value="100">100</option>
+            <option value="200">200</option>            
+            <option value="500">500</option>
+           <option value="1000">1000</option>
+           <option value="2000">2000</option>           
+          </select>
+        </td>
+     </tr>
+     <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
+  </table>
+
+  <table border="0" cellpadding="0" cellspacing="2" width="100%">
+      <tr><td></td><td>&nbsp;</td></tr>
+      <tr>
+        <td colspan="2" align="center"> 
+            <input type='button' onClick='btnBack()' value='Back'> <input type='button' onClick='applyClick()' value='Apply/Save'>
+         </td>
+      </tr>
+  </table>
+
+  </form>
+ </blockquote>
+ </body>
+</html>
+

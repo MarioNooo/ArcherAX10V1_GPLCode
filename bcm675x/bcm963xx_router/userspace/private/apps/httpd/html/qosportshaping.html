@@ -1,0 +1,85 @@
+ <html>
+   <head>
+      <meta HTTP-EQUIV='Pragma' CONTENT='no-cache'>
+      <link rel="stylesheet" href='stylemain.css' type='text/css'>
+         <link rel="stylesheet" href='colors.css' type='text/css'>
+            <script language="javascript" src="util.js"></script>
+            <script language="javascript">
+<!-- hide
+//In tr098, shapingRate is a signed integer. Therefore, max shaping rate is 0x7FFFFFFF bps or 2147483 Kbps.
+var shapingRateMax = 2147483;
+//Minimum burst size shall be minimally larger than the size of the largest possible IP packet in the stream.
+var burstMin = 1600;
+
+function btnApply() {
+   var loc = 'qosportshaping.cmd?action=savapply';
+   
+   with ( document.forms[0] )
+   {
+      for (var i=0; i < elements.length; i++)
+      {
+         if(elements[i].name.search('Enable') != -1)
+         {
+            if (elements[i].checked == true)
+            {
+               loc += '&'+elements[i].name + '=1';
+            }
+            else
+            {
+               loc += '&'+elements[i].name + '=0';
+            }
+         }
+         else if(elements[i].name.search('RateCfg') != -1)
+         {
+            if (isNaN(parseInt(elements[i].value)) == true)
+            {
+               alert('Shaping Rate "' + elements[i].value + '" is invalid.');
+               return;
+            }
+            rate = parseInt(elements[i].value);
+            if (rate != -1 && (rate <= 0 || rate > shapingRateMax))
+            {
+               alert('Shaping Rate "' + elements[i].value + '" is out of range [1-' + shapingRateMax + '].');
+               return;
+            }
+            loc += '&'+elements[i].name + '=' + encodeUrl(elements[i].value);
+         }
+         else if(elements[i].name.search('SizeCfg') != -1)
+         {
+            if (isNaN(parseInt(elements[i].value)) == true)
+            {
+               alert('Burst Size "' + elements[i].value + '" is invalid.');
+               return;
+            }
+            burst = parseInt(elements[i].value);
+            if (rate != -1 && burst < burstMin) {
+               alert('Burst Size "' + elements[i].value + '" shall be >=' + burstMin + '.');
+               return;
+            }
+            loc += '&'+elements[i].name + '=' + encodeUrl(elements[i].value);
+         }
+      }
+   }
+   loc += '&sessionKey=<%ejGetOther(sessionKey)%>';
+   var code = 'location="' + loc + '"';
+   eval(code);
+}
+// done hiding -->
+
+            </script>
+   </head>
+   <body>
+      <blockquote> 
+         <form>                                                                              
+            <b>QoS Port Shaping Setup</b><br>
+            <br> 
+            QoS port shaping supports traffic shaping of Ethernet interface.<br>
+            If "Shaping Rate" is set to "-1", it means no shaping and "Burst Size" will be ignored.<br>
+            <br> 
+<%ejGetOther(qosportshapingInfo,0,0)%>
+            <br> 
+            <input type='button' onClick='btnApply()' value='Apply/Save'> 
+         </form> 
+      </blockquote> 
+   </body> 
+</html>

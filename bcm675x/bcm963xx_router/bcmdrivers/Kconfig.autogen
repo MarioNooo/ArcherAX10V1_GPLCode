@@ -1,0 +1,44 @@
+
+# Automatically generated file -- do not modify manually
+
+
+menu "LIBS"
+source "../../bcmdrivers/broadcom/char/bcmlibs/Kconfig.autodetect"
+endmenu 
+
+menu "CLEDS_PROC_DRIVER"
+source "../../bcmdrivers/broadcom/char/cleds/Kconfig.autodetect"
+endmenu 
+
+menu "PDC"
+source "../../bcmdrivers/opensource/char/pdc/Kconfig.autodetect"
+endmenu 
+
+menu "MCAST"
+source "../../bcmdrivers/opensource/char/mcast/Kconfig.autodetect"
+endmenu 
+
+menu "SPU"
+source "../../bcmdrivers/opensource/char/spudd/Kconfig.autodetect"
+endmenu 
+
+menu "CRYPTODEV"
+source "../../bcmdrivers/opensource/char/cryptodev/Kconfig.autodetect"
+endmenu 
+
+menu "CPUFREQ"
+source "../../bcmdrivers/opensource/misc/cpufreq/Kconfig.autodetect"
+endmenu 
+
+menu "SOUND"
+source "../../bcmdrivers/opensource/misc/sound/codecs/Kconfig.autodetect"
+endmenu 
+
+menu "SOUND"
+source "../../bcmdrivers/opensource/misc/sound/asoc/Kconfig.autodetect"
+endmenu 
+
+menu "COMMON_CLK"
+source "../../bcmdrivers/opensource/misc/clk/Kconfig.autodetect"
+endmenu 
+

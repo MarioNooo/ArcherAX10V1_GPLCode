@@ -1,0 +1,938 @@
+<html>
+   <head>
+
+      <style type="text/css">
+      ul#tabs { list-style-type: none; margin: 30px 0 0 0; padding: 0 0 0.3em 0; }
+      ul#tabs li { display: inline; }
+      ul#tabs li a { color: #42454a; background-color: #dedbde; border: 1px solid #c9c3ba; border-bottom: none; padding: 0.3em; text-decoration: none; }
+      ul#tabs li a:hover { background-color: #f1f0ee; }
+      ul#tabs li a.selected { color: #000; background-color: #f1f0ee; font-weight: bold; padding: 0.7em 0.3em 0.38em 0.3em; }
+      div.tabContent { border: 1px solid #c9c3ba; padding: 0.5em; background-color: #f1f0ee; }
+      div.tabContent.hide { display: none; }
+      </style>
+
+      <meta HTTP-EQUIV='Pragma' CONTENT='no-cache'>
+      <link rel="stylesheet" href='stylemain.css' type='text/css'>
+      <link rel="stylesheet" href='colors.css' type='text/css'>
+      <script language="javascript" src="util.js"></script>
+
+<script language="javascript">
+/////////////////////////
+// BEGINING OF JAVASCRIPT
+/////////////////////////
+
+///////////////////////
+// Initialize variables
+///////////////////////
+
+var numVoiceButtonSets = 2;
+
+/* Retrieve variables from CGI - %ejGetVoice()% is replaced by cgiGetVarVoice()
+ * in httpd before file is sent to the remote browser
+ */
+var voiceRunning = '<%ejGetVoice(voiceStatus)%>';
+var selTab = '<%ejGetVoice(selectedStatsTab)%>';
+var numCcLines = '<%ejGetVoice(numCcLines)%>';
+var sessionKey='<%ejGetOther(sessionKey)%>';
+
+var maxCallLog='<%ejGetVoice(maxCallLog)%>';
+var callLogEntries='<%ejGetVoice(cLogEntries)%>';
+
+// Initialize dynamic variables
+for (var i = 1; i <= numCcLines; i++)
+{
+   eval( "var ast" + i + " \= \"\" " );
+   eval( "var rs" + i + " \= \"\" " );
+   eval( "var rr" + i + " \= \"\" " );
+   eval( "var rl" + i + " \= \"\" " );
+   eval( "var bs" + i + " \= \"\" " );
+   eval( "var br" + i + " \= \"\" " );
+   
+   eval( "var icr" + i + " \= \"\" " );
+   eval( "var icc" + i + " \= \"\" " );
+   eval( "var icf" + i + " \= \"\" " );
+   eval( "var icd" + i + " \= \"\" " );
+   
+   eval( "var oca" + i + " \= \"\" " );
+   eval( "var occ" + i + " \= \"\" " );
+   eval( "var ocf" + i + " \= \"\" " );
+   eval( "var ocd" + i + " \= \"\" " );
+}
+
+for (var i = 1; i <= callLogEntries; i++)
+{
+   eval( "var cldir" + i + " \= \"\" " );
+   eval( "var clcgn" + i + " \= \"\" " );
+   eval( "var clcdn" + i + " \= \"\" " );
+   eval( "var clstr" + i + " \= \"\" " );
+   eval( "var clend" + i + " \= \"\" " );
+   eval( "var cldur" + i + " \= \"\" " );
+   eval( "var clter" + i + " \= \"\" " );
+   eval( "var clses" + i + " \= \"\" " );
+}
+
+
+// Retrieve string list for dynamic variables (list based, eg. "item1=x item2=y ...")
+var lst_ast = '<%ejGetVoice(accntStatus)%>';
+
+var lst_rs = '<%ejGetVoice(rtpPacketSent)%>';
+var lst_rr = '<%ejGetVoice(rtpPacketRecv)%>';
+var lst_rl = '<%ejGetVoice(rtpPacketLost)%>';
+var lst_bs = '<%ejGetVoice(totalBytesSent)%>';
+var lst_br = '<%ejGetVoice(totalBytesRecv)%>';
+
+var lst_icr = '<%ejGetVoice(incCallReceived)%>';
+var lst_icc = '<%ejGetVoice(incCallConnected)%>';
+var lst_icf = '<%ejGetVoice(incCallFailed)%>';
+var lst_icd = '<%ejGetVoice(incCallDropped)%>';
+
+var lst_oca = '<%ejGetVoice(outCallAttempted)%>';
+var lst_occ = '<%ejGetVoice(outCallConnected)%>';
+var lst_ocf = '<%ejGetVoice(outCallFailed)%>';
+var lst_ocd = '<%ejGetVoice(outCallDropped)%>';
+
+var lst_cldir = '<%ejGetVoice(cLogDir)%>';
+var lst_clcgn = '<%ejGetVoice(cLogCallingNum)%>';
+var lst_clcdn = '<%ejGetVoice(cLogCalledNum)%>';
+var lst_clstr = '<%ejGetVoice(cLogCallStart)%>';
+var lst_clend = '<%ejGetVoice(cLogCallEnd)%>';
+var lst_cldur = '<%ejGetVoice(cLogCallDur)%>';
+var lst_clter = '<%ejGetVoice(cLogCallTerm)%>';
+var lst_clses = '<%ejGetVoice(cLogSessions)%>';
+
+var lst_sslv  = '<%ejGetVoice(sessLocalValid)%>';
+var lst_ssmcq = '<%ejGetVoice(sessMosCq)%>';
+var lst_ssmlq = '<%ejGetVoice(sessMosLq)%>';
+var lst_sssig = '<%ejGetVoice(sessSigLvl)%>';
+var lst_ssnoi = '<%ejGetVoice(sessNoiLvl)%>';
+var lst_ssrel = '<%ejGetVoice(sessRERL)%>';
+var lst_dstip = '<%ejGetVoice(sessDstIp)%>';
+var lst_dstpt = '<%ejGetVoice(sessDstPt)%>';
+var lst_locpt = '<%ejGetVoice(sessLocPt)%>';
+var lst_pkttx = '<%ejGetVoice(sessPktTx)%>';
+var lst_octtx = '<%ejGetVoice(sessOctTx)%>';
+var lst_pktrx = '<%ejGetVoice(sessPktRx)%>';
+var lst_octrx = '<%ejGetVoice(sessOctRx)%>';
+var lst_pktlt = '<%ejGetVoice(sessPktLost)%>';
+var lst_ssjit = '<%ejGetVoice(sessIntJit)%>';
+var lst_txdel = '<%ejGetVoice(sessTxDel)%>';
+var lst_rxdis = '<%ejGetVoice(sessRxDiscard)%>';
+var lst_jbadj = '<%ejGetVoice(sessJBAdj)%>';
+var lst_jbmax = '<%ejGetVoice(sessJBMax)%>';
+var lst_ssrtd = '<%ejGetVoice(sessRTDelay)%>';
+
+
+// Convert string list to dynamic variables
+if ( lst_ast.search("ejGetVoice") < 0 ) {
+   eval( lst_ast );
+}
+if ( lst_rs.search("ejGetVoice") < 0 ) {
+   eval( lst_rs );
+}
+if ( lst_rr.search("ejGetVoice") < 0 ) {
+   eval( lst_rr );
+}
+if ( lst_rl.search("ejGetVoice") < 0 ) {
+   eval( lst_rl );
+}
+if ( lst_bs.search("ejGetVoice") < 0 ) {
+   eval( lst_bs );
+}
+if ( lst_br.search("ejGetVoice") < 0 ) {
+   eval( lst_br );
+}   
+if ( lst_icr.search("ejGetVoice") < 0 ) {
+   eval( lst_icr );
+}
+if ( lst_icc.search("ejGetVoice") < 0 ) {
+   eval( lst_icc );
+}
+if ( lst_icf.search("ejGetVoice") < 0 ) {
+   eval( lst_icf );
+}
+if ( lst_icd.search("ejGetVoice") < 0 ) {
+   eval( lst_icd );  
+}
+if ( lst_oca.search("ejGetVoice") < 0 ) {
+   eval( lst_oca );
+}
+if ( lst_occ.search("ejGetVoice") < 0 ) {
+   eval( lst_occ );
+}
+if ( lst_ocf.search("ejGetVoice") < 0 ) {
+   eval( lst_ocf );
+}
+if ( lst_ocd.search("ejGetVoice") < 0 ) {
+   eval( lst_ocd );
+}
+
+if ( lst_cldir.search("ejGetVoice") < 0 ) {
+   eval( lst_cldir );
+}
+if ( lst_clcgn.search("ejGetVoice") < 0 ) {
+   eval( lst_clcgn );
+}
+if ( lst_clcdn.search("ejGetVoice") < 0 ) {
+   eval( lst_clcdn );
+}
+if ( lst_clstr.search("ejGetVoice") < 0 ) {
+   eval( lst_clstr );
+}
+if ( lst_clend.search("ejGetVoice") < 0 ) {
+   eval( lst_clend );
+}
+if ( lst_cldur.search("ejGetVoice") < 0 ) {
+   eval( lst_cldur );
+}
+if ( lst_clter.search("ejGetVoice") < 0 ) {
+   eval( lst_clter );
+}
+if ( lst_clses.search("ejGetVoice") < 0 ) {
+   eval( lst_clses );
+}
+
+if ( lst_sslv.search("ejGetVoice") < 0 ) {
+   eval( lst_sslv );
+}
+if ( lst_ssmcq.search("ejGetVoice") < 0 ) {
+   eval( lst_ssmcq );
+}
+if ( lst_ssmlq.search("ejGetVoice") < 0 ) {
+   eval( lst_ssmlq );
+}
+if ( lst_sssig.search("ejGetVoice") < 0 ) {
+   eval( lst_sssig );
+}
+if ( lst_ssnoi.search("ejGetVoice") < 0 ) {
+   eval( lst_ssnoi );
+}
+if ( lst_ssrel.search("ejGetVoice") < 0 ) {
+   eval( lst_ssrel );
+}
+if ( lst_dstip.search("ejGetVoice") < 0 ) {
+   eval( lst_dstip );
+}
+if ( lst_dstpt.search("ejGetVoice") < 0 ) {
+   eval( lst_dstpt );
+}
+if ( lst_locpt.search("ejGetVoice") < 0 ) {
+   eval( lst_locpt );
+}
+if ( lst_pkttx.search("ejGetVoice") < 0 ) {
+   eval( lst_pkttx );
+}
+if ( lst_octtx.search("ejGetVoice") < 0 ) {
+   eval( lst_octtx );
+}
+if ( lst_pktrx.search("ejGetVoice") < 0 ) {
+   eval( lst_pktrx );
+}
+if ( lst_octrx.search("ejGetVoice") < 0 ) {
+   eval( lst_octrx );
+}
+if ( lst_pktlt.search("ejGetVoice") < 0 ) {
+   eval( lst_pktlt );
+}
+if ( lst_ssjit.search("ejGetVoice") < 0 ) {
+   eval( lst_ssjit );
+}
+if ( lst_txdel.search("ejGetVoice") < 0 ) {
+   eval( lst_txdel );
+}
+if ( lst_rxdis.search("ejGetVoice") < 0 ) {
+   eval( lst_rxdis );
+}
+if ( lst_jbadj.search("ejGetVoice") < 0 ) {
+   eval( lst_jbadj );
+}
+if ( lst_jbmax.search("ejGetVoice") < 0 ) {
+   eval( lst_jbmax );
+}
+if ( lst_ssrtd.search("ejGetVoice") < 0 ) {
+   eval( lst_ssrtd );
+}
+
+
+////////////
+// Functions
+////////////
+
+function btnRefresh() {
+   var loc = 'voicerefresh.cmd?';
+
+   loc += addParamsToQuery( loc, "stats" );
+
+   //Stripping quotes and spaces
+   loc = loc.replace(/['" ]/g,'');
+
+   loc += '&sessionKey=' + sessionKey;
+   var code = 'location="' + loc + '"';
+   eval(code);
+}
+
+// Adds parameters to the query passed to the http server
+function addParamsToQuery( loc_init, current_view) {
+   var loc = loc_init;
+
+   with ( document.forms[0] ) {
+      loc += 'currentview=' + current_view;
+      loc += '&currentStatsTab=' + selectedTab;
+   }
+
+   return loc;
+}
+
+function frmLoad(current_view) {
+
+   init();
+
+   with ( document.forms[0] ) {
+
+      /* Initialize SIP parameters */
+
+      for (var i = 1; i <= numCcLines; i++)
+      {
+         eval("accntSt" + i + ".value = ast" + i);
+
+         eval("rtpSent" + i + ".value = rs" + i);
+         eval("rtpRecv" + i + ".value = rr" + i);
+         eval("rtpLost" + i + ".value = rl" + i);
+         eval("bytesRecv" + i + ".value = br" + i);
+         eval("bytesSent" + i + ".value = bs" + i);
+
+         eval("incCallRecv" + i + ".value = icr" + i);
+         eval("incCallConn" + i + ".value = icc" + i);
+         eval("incCallDrop" + i + ".value = icd" + i);
+         eval("incCallFail" + i + ".value = icf" + i);
+
+         eval("outCallAtt" + i + ".value = oca" + i);
+         eval("outCallConn" + i + ".value = occ" + i);
+         eval("outCallDrop" + i + ".value = ocd" + i);
+         eval("outCallFail" + i + ".value = ocf" + i);
+      }
+
+      eval("maxCL.value = maxCallLog");
+      eval("clnum.value = callLogEntries");
+
+      for (var i = 1; i <= callLogEntries; i++)
+      {
+         eval("clogDir" + i + ".value = cldir" + i);
+         eval("clogCgn" + i + ".value = clcgn" + i);
+         eval("clogCdn" + i + ".value = clcdn" + i);
+         eval("clogStr" + i + ".value = clstr" + i);
+         eval("clogEnd" + i + ".value = clend" + i);
+         eval("clogDur" + i + ".value = cldur" + i);
+         eval("clogTer" + i + ".value = clter" + i);
+
+         var numSessions = eval("clses" + i);
+         for (var j = 1; j <= numSessions; j++)
+         {
+            var isLocalValid = eval("sslv" + i + j).toUpperCase();
+            if (isLocalValid == "YES")
+            {
+               eval("sesSig" + i + j + ".value = sssig" + i + j);
+               eval("sesNoi" + i + j + ".value = ssnoi" + i + j);
+               eval("sesRel" + i + j + ".value = ssrel" + i + j);
+               eval("sesJBAdj" + i + j + ".value = jbadj" + i + j);
+               eval("sesJBMax" + i + j + ".value = jbmax" + i + j);
+               eval("sesRTDelay" + i + j + ".value = ssrtd" + i + j);
+            }
+            eval("sesDstIp" + i + j + ".value = dstip" + i + j);
+            eval("sesDstPt" + i + j + ".value = dstpt" + i + j);
+            eval("sesLocPt" + i + j + ".value = locpt" + i + j);
+            eval("sesPktTx" + i + j + ".value = pkttx" + i + j);
+            eval("sesOctTx" + i + j + ".value = octtx" + i + j);
+            eval("sesPktRx" + i + j + ".value = pktrx" + i + j);
+            eval("sesOctRx" + i + j + ".value = octrx" + i + j);
+            eval("sesPktLt" + i + j + ".value = pktlt" + i + j);
+            eval("sesJit"   + i + j + ".value = ssjit" + i + j);
+            eval("sesTxDel" + i + j + ".value = txdel" + i + j);
+         }
+      }
+   }
+   showSelectedTab();
+}
+
+function enableVoiceButtons(index)
+{
+   var buttonRefresh = document.getElementById( "RefreshButton" + index );
+
+   if ( voiceRunning == 1 ) {
+      buttonRefresh.disabled = false;
+   } else {
+      buttonRefresh.disabled = true;
+   }
+}
+
+var tabLinks = new Array();
+var contentDivs = new Array();
+var selectedTab;
+
+function init() {
+
+  // Grab the tab links and content divs from the page
+  var tabListItems = document.getElementById('tabs').childNodes;
+  for ( var i = 0; i < tabListItems.length; i++ ) {
+    if ( tabListItems[i].nodeName == "LI" ) {
+      var tabLink = getFirstChildWithTagName( tabListItems[i], 'A' );
+      var id = getHash( tabLink.getAttribute('href') );
+      tabLinks[id] = tabLink;
+      contentDivs[id] = document.getElementById( id );
+    }
+  }
+
+  // Assign onclick events to the tab links, and
+  // highlight the last selected tab
+  var i = 0;
+  selectedTab = selTab;
+
+  for ( var id in tabLinks ) {
+    tabLinks[id].onclick = showTab;
+    tabLinks[id].onfocus = function() { this.blur() };
+    if ( i == 0 ) tabLinks[id].className = 'selected';
+    i++;
+  }
+
+  // Hide all content divs except the first
+  var i = 0;
+
+  for ( var id in contentDivs ) {
+    if ( i != 0 ) contentDivs[id].className = 'tabContent hide';
+    i++;
+  }
+}
+
+
+function showTab() {
+  var selectedId = getHash( this.getAttribute('href') );
+
+  // Highlight the selected tab, and dim all others.
+  // Also show the selected content div, and hide all others.
+  for ( var id in contentDivs ) {
+    if ( id == selectedId ) {
+      selectedTab = selectedId;
+      tabLinks[id].className = 'selected';
+      contentDivs[id].className = 'tabContent';
+    } else {
+      tabLinks[id].className = '';
+      contentDivs[id].className = 'tabContent hide';
+    }
+  }
+
+  // Stop the browser following the link
+  return false;
+}
+
+function showSelectedTab() {
+  // Highlight the selected tab, and dim all others.
+  // Also show the selected content div, and hide all others.
+  for ( var id in contentDivs ) {
+    if ( id == selTab ) {
+      tabLinks[id].className = 'selected';
+      contentDivs[id].className = 'tabContent active';
+    } else {
+      tabLinks[id].className = '';
+      contentDivs[id].className = 'tabContent hide';
+    }
+  }
+
+  // Stop the browser following the link
+  return false;
+}
+
+function getFirstChildWithTagName( element, tagName ) {
+  for ( var i = 0; i < element.childNodes.length; i++ ) {
+    if ( element.childNodes[i].nodeName == tagName ) return element.childNodes[i];
+  }
+}
+
+function getHash( url ) {
+  var hashPos = url.lastIndexOf ( '#' );
+  return url.substring( hashPos + 1 );
+}
+
+function createTabs() {
+  document.writeln("<ul id='tabs'>");
+  document.writeln("<li><a href='#" + 0 + "'>Voice Statistics and Status</a></li>");
+  document.writeln("<li><a href='#" + 1 + "'>Call Log Details</a></li>");
+}
+
+function createLinesTable() {
+
+   document.writeln("<table id='linesTable' border='1'><tbody id='linesTbody'>");
+
+   document.writeln("<tr>");
+   document.writeln("<td class='hd' width='200'>SIP Account<\/td>");
+   for (var line = 1; line <= numCcLines; line++)
+   {
+      document.writeln("<td align=center>" + line + "</td>");
+   }
+   document.writeln("</tr>");
+
+   /* 2nd row */
+   document.writeln("<tr>");
+   document.writeln("<td class='hd' width='200'>Account Status<\/td>");
+   for (var line = 1; line <= numCcLines; line++)
+   {
+      document.writeln("<td><input type='text' id='accntSt" + line + "' name='accntSt" + line + "' disabled></td>");
+   }
+   document.writeln("</tr>");
+
+   /* 3rd row */
+   document.writeln("<tr>");
+   document.writeln("<td class='hd' width='200'>RTP Packets Sent<\/td>");
+   for (var line = 1; line <= numCcLines; line++)
+   {
+      document.writeln("<td><input type='text' id='rtpSent" + line + "' name='rtpSent" + line + "' disabled></td>");
+   }
+   document.writeln("</tr>");
+
+   /* 4th row */
+   document.writeln("<tr>");
+   document.writeln("<td class='hd' width='200'>RTP Packets Received<\/td>");
+   for (var line = 1; line <= numCcLines; line++)
+   {
+      document.writeln("<td><input type='text' id='rtpRecv" + line + "' name='rtpRecv" + line + "' disabled></td>");
+   }
+   document.writeln("</tr>");
+ 
+   /* 5th row */
+   document.writeln("<tr>");
+   document.writeln("<td class='hd' width='200'>RTP Packets Lost<\/td>");
+   for (var line = 1; line <= numCcLines; line++)
+   {
+      document.writeln("<td><input type='text' id='rtpLost" + line + "' name='rtpLost" + line + "' disabled></td>");
+   }
+   document.writeln("</tr>");
+   
+   /* 6th row */
+   document.writeln("<tr>");
+   document.writeln("<td class='hd' width='200'>Total Bytes Sent<\/td>");
+   for (var line = 1; line <= numCcLines; line++)
+   {
+      document.writeln("<td><input type='text' id='bytesSent" + line + "' name='bytesSent" + line + "' disabled></td>");
+   }
+   document.writeln("</tr>");
+
+   /* 7th row */
+   document.writeln("<tr>");
+   document.writeln("<td class='hd' width='200'>Total Bytes Received<\/td>");
+   for (var line = 1; line <= numCcLines; line++)
+   {
+      document.writeln("<td><input type='text' id='bytesRecv" + line + "' name='bytesRecv" + line + "' disabled></td>");
+   }
+   document.writeln("</tr>");
+   
+   /* 8th row */
+   document.writeln("<tr>");
+   document.writeln("<td class='hd' width='200'>Incoming Calls Received<\/td>");
+   for (var line = 1; line <= numCcLines; line++)
+   {
+      document.writeln("<td><input type='text' id='incCallRecv" + line + "' name='incCallRecv" + line + "' disabled></td>");
+   }
+   document.writeln("</tr>");
+   
+   /* 9th row */
+   document.writeln("<tr>");
+   document.writeln("<td class='hd' width='200'>Incoming Calls Connected<\/td>");
+   for (var line = 1; line <= numCcLines; line++)
+   {
+      document.writeln("<td><input type='text' id='incCallConn" + line + "' name='incCallConn" + line + "' disabled></td>");
+   }
+   document.writeln("</tr>");
+   
+   /* 10th row */
+   document.writeln("<tr>");
+   document.writeln("<td class='hd' width='200'>Incoming Calls Failed<\/td>");
+   for (var line = 1; line <= numCcLines; line++)
+   {
+      document.writeln("<td><input type='text' id='incCallFail" + line + "' name='incCallFail" + line + "' disabled></td>");
+   }
+   document.writeln("</tr>");
+   
+   /* 11th row */
+   document.writeln("<tr>");
+   document.writeln("<td class='hd' width='200'>Incoming Calls Dropped<\/td>");
+   for (var line = 1; line <= numCcLines; line++)
+   {
+      document.writeln("<td><input type='text' id='incCallDrop" + line + "' name='incCallDrop" + line + "' disabled></td>");
+   }
+   document.writeln("</tr>");
+   
+   /* 12th row */
+   document.writeln("<tr>");
+   document.writeln("<td class='hd' width='200'>Outgoing Calls Attempted<\/td>");
+   for (var line = 1; line <= numCcLines; line++)
+   {
+      document.writeln("<td><input type='text' id='outCallAtt" + line + "' name='outCallAtt" + line + "' disabled></td>");
+   }
+   document.writeln("</tr>");
+   
+   /* 13th row */
+   document.writeln("<tr>");
+   document.writeln("<td class='hd' width='200'>Outgoing Calls Connected<\/td>");
+   for (var line = 1; line <= numCcLines; line++)
+   {
+      document.writeln("<td><input type='text' id='outCallConn" + line + "' name='outCallConn" + line + "' disabled></td>");
+   }
+   document.writeln("</tr>");
+   
+   /* 14th row */
+   document.writeln("<tr>");
+   document.writeln("<td class='hd' width='200'>Outgoing Calls Failed<\/td>");
+   for (var line = 1; line <= numCcLines; line++)
+   {
+      document.writeln("<td><input type='text' id='outCallFail" + line + "' name='outCallFail" + line + "' disabled></td>");
+   }
+   document.writeln("</tr>");
+   
+   /* 15th row */
+   document.writeln("<tr>");
+   document.writeln("<td class='hd' width='200'>Outgoing Calls Dropped<\/td>");
+   for (var line = 1; line <= numCcLines; line++)
+   {
+      document.writeln("<td><input type='text' id='outCallDrop" + line + "' name='outCallDrop" + line + "' disabled></td>");
+   }
+   document.writeln("</tr>");
+ 
+   document.writeln("</tbody></table>");
+}
+
+function createRtpStats() {
+   document.writeln("<div class='tabContent' id='0'>");
+   document.writeln("<div>");
+
+   document.writeln("   <br>");
+   document.writeln("   <br>");
+                        createLinesTable();
+   document.writeln("   <br>");
+   document.writeln("   <br>");
+   document.writeln("   <center>");
+   document.writeln("       <input type='button' onClick='btnRefresh()' value='Refresh' id='RefreshButton" + 0 + "' disabled=true>");
+   document.writeln("       <br>");
+   document.writeln("    </center>");
+   document.writeln("    <br>");
+   document.writeln("</div>");
+   document.writeln("</div>");
+}
+
+function createHistoryTable() {
+   /* Write max call log entries table */
+   document.writeln("<table id='clhdrTable' border='1'><tbody id='clhdrTbody'>");
+   document.writeln("<tr>");
+   document.writeln("<td class='hd' width='200'>Max Call Log Entries</td>");
+   document.writeln("<td><input type='text' size='40' id='maxCL' name='maxCL' disabled></td>");
+   document.writeln("</tr>");
+   document.writeln("<tr>");
+   document.writeln("<td class='hd' width='200'>Number of Call Log Entries</td>");
+   document.writeln("<td><input type='text' size='40' id='clnum' name='clnum' disabled></td>");
+   document.writeln("</tr>");
+   document.writeln("</tbody></table>");
+   document.writeln("<br>");
+
+   /* Write call log history table */
+   if ( callLogEntries == 0 )
+   {
+      document.writeln("<table id='calllogTable' border='1'><tbody id='calllogTbody'>");
+      document.writeln("<tr>");
+      document.writeln("<td class='hd' width='200'>No call log entries!</td>");
+      document.writeln("</tr>");
+      document.writeln("</tbody></table>");
+   }
+   else
+   {
+      for ( var callLog = 1; callLog <= callLogEntries; callLog++ )
+      {
+         if ( callLog > 1 )
+         {
+            document.writeln("<p></p>");
+         }
+
+         document.writeln("<table id='calllogTable" + callLog + "' border='1'><tbody id='calllogTbody" + callLog + "'>");
+
+         /* Call log entry number */
+         document.writeln("<tr>");
+         document.writeln("<td class='hd' width='200'>Call Log Entry:</td>");
+         document.writeln("<td>" + (callLog-1) + "</td>");
+         document.writeln("</tr>");
+
+         /* Call direction */
+         document.writeln("<tr>");
+         document.writeln("<td class='hd' width='200'>Direction</td>");
+         document.writeln("<td><input type='text' size='40' id='clogDir" + callLog + "' name='clogDir" + callLog + "' disabled></td>");
+         document.writeln("</tr>");
+
+         /* Calling number */
+         document.writeln("<tr>");
+         document.writeln("<td class='hd' width='200'>Calling Number</td>");
+         document.writeln("<td><input type='text' size='40' id='clogCgn" + callLog + "' name='clogCgn" + callLog + "' disabled></td>");
+         document.writeln("</tr>");
+
+         /* Called number */
+         document.writeln("<tr>");
+         document.writeln("<td class='hd' width='200'>Called Number</td>");
+         document.writeln("<td><input type='text' size='40' id='clogCdn" + callLog + "' name='clogCdn" + callLog + "' disabled></td>");
+         document.writeln("</tr>");
+
+         /* Call start */
+         document.writeln("<tr>");
+         document.writeln("<td class='hd' width='200'>Call Start</td>");
+         document.writeln("<td><input type='text' size='40' id='clogStr" + callLog + "' name='clogStr" + callLog + "' disabled></td>");
+         document.writeln("</tr>");
+
+         /* Call end */
+         document.writeln("<tr>");
+         document.writeln("<td class='hd' width='200'>Call End</td>");
+         document.writeln("<td><input type='text' size='40' id='clogEnd" + callLog + "' name='clogEnd" + callLog + "' disabled></td>");
+         document.writeln("</tr>");
+
+         /* call duration */
+         document.writeln("<tr>");
+         document.writeln("<td class='hd' width='200'>Call Duration (sec)</td>");
+         document.writeln("<td><input type='text' size='40' id='clogDur" + callLog + "' name='clogDur" + callLog + "' disabled></td>");
+         document.writeln("</tr>");
+
+         /* call terminate */
+         document.writeln("<tr>");
+         document.writeln("<td class='hd' width='200'>Call Terminate</td>");
+         document.writeln("<td><input type='text' size='40' id='clogTer" + callLog + "' name='clogTer" + callLog + "' disabled></td>");
+         document.writeln("</tr>");
+
+         /* Loop through each session */
+         var callLogSessions = eval("clses" + callLog);
+
+         for (var session = 1; session <= callLogSessions; session++)
+         {
+            /* Session entry */
+            document.writeln("<tr>");
+            document.writeln("<td class='hd' width='200'>Session Entry:</td>");
+            document.writeln("<td>" + (session-1) + "</td>");
+            document.writeln("</tr>");
+
+            var isLocalValid = eval("sslv" + callLog + session).toUpperCase();
+
+            /* MOS-CQ */            
+            document.writeln("<tr>");
+            document.writeln("<td class='hd' width='200'>MOS-CQ Score</td>");
+            document.writeln("<td><input type='text' size='40' id='sesMcq" + callLog + session + "' name='sesMcq" + callLog + session + "'");
+            if (isLocalValid == "YES")
+            {
+               var locMoscq = ( parseFloat( eval("ssmcq" + callLog + session) ) ) / 10.0;
+               
+               document.writeln(" value='" + locMoscq.toFixed(1) + "' ");
+            }
+            else
+            {
+               document.writeln(" value='Unavailable' ");
+            }
+            document.writeln("disabled></td>");
+            document.writeln("</tr>");
+
+
+            /* MOS-LQ */
+            document.writeln("<tr>");
+            document.writeln("<td class='hd' width='200'>MOS-LQ Score</td>");
+            document.writeln("<td><input type='text' size='40' id='sesMlq" + callLog + session + "' name='sesMlq" + callLog + session + "'");
+            if (isLocalValid == "YES")
+            {
+               var locMoslq = ( parseFloat( eval("ssmlq" + callLog + session) ) ) / 10.0;
+               
+               document.writeln(" value='" + locMoslq.toFixed(1) + "' ");
+            }
+            else
+            {
+               document.writeln(" value='Unavailable' ");
+            }
+            document.writeln("disabled></td>");
+            document.writeln("</tr>");
+   
+            /* RF Signal Level */
+            document.writeln("<tr>");
+            document.writeln("<td class='hd' width='200'>RF Signal Level (db)</td>");
+            document.writeln("<td><input type='text' size='40' id='sesSig" + callLog + session + "' name='sesSig" + callLog + session + "'");
+            if (isLocalValid != "YES")
+            {
+               document.writeln(" value='Unavailable' ");
+            }
+            document.writeln("disabled></td>");
+            document.writeln("</tr>");
+
+            /* RF Noise Level */
+            document.writeln("<tr>");
+            document.writeln("<td class='hd' width='200'>RF Noise Level (db)</td>");
+            document.writeln("<td><input type='text' size='40' id='sesNoi" + callLog + session + "' name='sesNoi" + callLog + session + "'");
+            if (isLocalValid != "YES")
+            {
+               document.writeln(" value='Unavailable' ");
+            }
+            document.writeln("disabled></td>");
+            document.writeln("</tr>");
+
+            /* Residual Echo Return Loss */
+            document.writeln("<tr>");
+            document.writeln("<td class='hd' width='200'>Residual Echo Return Loss (db)</td>");
+            document.writeln("<td><input type='text' size='40' id='sesRel" + callLog + session + "' name='sesRel" + callLog + session + "'");
+            if (isLocalValid != "YES")
+            {
+               document.writeln(" value='Unavailable' ");
+            }
+            document.writeln("disabled></td>");
+            document.writeln("</tr>");
+
+            /* Destination RTP IP address */
+            document.writeln("<tr>");
+            document.writeln("<td class='hd' width='200'>Destination RTP IP Address</td>");
+            document.writeln("<td><input type='text' size='40' id='sesDstIp" + callLog + session + "' name='sesDstIp" + callLog + session + "' disabled></td>");
+            document.writeln("</tr>");
+
+            /* Destination RTP port */
+            document.writeln("<tr>");
+            document.writeln("<td class='hd' width='200'>Destination RTP Port</td>");
+            document.writeln("<td><input type='text' size='40' id='sesDstPt" + callLog + session + "' name='sesDstPt" + callLog + session + "' disabled></td>");
+            document.writeln("</tr>");
+
+            /* Local RTP port */
+            document.writeln("<tr>");
+            document.writeln("<td class='hd' width='200'>Local RTP Port</td>");
+            document.writeln("<td><input type='text' size='40' id='sesLocPt" + callLog + session + "' name='sesLocPt" + callLog + session + "' disabled></td>");
+            document.writeln("</tr>");
+
+            /* Num packets sent */
+            document.writeln("<tr>");
+            document.writeln("<td class='hd' width='200'>Number of Packets Sent</td>");
+            document.writeln("<td><input type='text' size='40' id='sesPktTx" + callLog + session + "' name='sesPktTx" + callLog + session + "' disabled></td>");
+            document.writeln("</tr>");
+
+            /* Num Octets sent */
+            document.writeln("<tr>");
+            document.writeln("<td class='hd' width='200'>Number of Octets Sent</td>");
+            document.writeln("<td><input type='text' size='40' id='sesOctTx" + callLog + session + "' name='sesOctTx" + callLog + session + "' disabled></td>");
+            document.writeln("</tr>");
+
+            /* Num packets received */
+            document.writeln("<tr>");
+            document.writeln("<td class='hd' width='200'>Number of Packets Received</td>");
+            document.writeln("<td><input type='text' size='40' id='sesPktRx" + callLog + session + "' name='sesPktRx" + callLog + session + "' disabled></td>");
+            document.writeln("</tr>");
+
+            /* Num octets received */
+            document.writeln("<tr>");
+            document.writeln("<td class='hd' width='200'>Number of Octets Received</td>");
+            document.writeln("<td><input type='text' size='40' id='sesOctRx" + callLog + session + "' name='sesOctRx" + callLog + session + "' disabled></td>");
+            document.writeln("</tr>");
+
+            /* Num packets lost */
+            document.writeln("<tr>");
+            document.writeln("<td class='hd' width='200'>Number of Packets Lost</td>");
+            document.writeln("<td><input type='text' size='40' id='sesPktLt" + callLog + session + "' name='sesPktLt" + callLog + session + "' disabled></td>");
+            document.writeln("</tr>");
+
+            /* Interarrival Jitter */
+            document.writeln("<tr>");
+            document.writeln("<td class='hd' width='200'>Interarrival Jitter (msec)</td>");
+            document.writeln("<td><input type='text' size='40' id='sesJit" + callLog + session + "' name='sesJit" + callLog + session + "' disabled></td>");
+            document.writeln("</tr>");
+
+            /* Average Tx Delay */
+            document.writeln("<tr>");
+            document.writeln("<td class='hd' width='200'>Average Tx Delay (msec)</td>");
+            document.writeln("<td><input type='text' size='40' id='sesTxDel" + callLog + session + "' name='sesTxDel" + callLog + session + "' disabled></td>");
+            document.writeln("</tr>");
+
+            /* Jitter buffer discard rate */
+            var pktsDiscarded = parseInt( eval("rxdis" + callLog + session), 10 );
+            var pktsRx = parseInt( eval("pktrx" + callLog + session), 10 );
+            var discardRatio = 0;
+            if ( pktsRx > 0 )
+            {
+               discardRatio = (pktsDiscarded * 100) / pktsRx;
+            }
+            document.writeln("<tr>");
+            document.writeln("<td class='hd' width='200'>Jitter Buffer Discard Rate (%)</td>");
+            document.writeln("<td><input type='text' size='40' id='sesRxDis" + callLog + session + "' name='sesRxDis" + callLog + session + "'");
+            document.writeln(" value='" + discardRatio + "' disabled></td>");
+            document.writeln("</tr>");
+
+            /* Jitter buffer adjustment rate */
+            document.writeln("<tr>");
+            document.writeln("<td class='hd' width='200'>Jitter Buffer Adj Rate (msec)</td>");
+            document.writeln("<td><input type='text' size='40' id='sesJBAdj" + callLog + session + "' name='sesJBAdj" + callLog + session + "'");
+            if (isLocalValid != "YES")
+            {
+               document.writeln(" value='Unavailable' ");
+            }
+            document.writeln("disabled></td>");
+            document.writeln("</tr>");
+
+            /* Jitter buffer maximum size */
+            document.writeln("<tr>");
+            document.writeln("<td class='hd' width='200'>Jitter Buffer Maximum Size (msec)</td>");
+            document.writeln("<td><input type='text' size='40' id='sesJBMax" + callLog + session + "' name='sesJBMax" + callLog + session + "'");
+            if (isLocalValid != "YES")
+            {
+               document.writeln(" value='Unavailable' ");
+            }
+            document.writeln("disabled></td>");
+            document.writeln("</tr>");
+
+            /* Network Round Trip delay */
+            document.writeln("<tr>");
+            document.writeln("<td class='hd' width='200'>Network Round Trip Delay (msec)</td>");
+            document.writeln("<td><input type='text' size='40' id='sesRTDelay" + callLog + session + "' name='sesRTDelay" + callLog + session + "'");
+            if (isLocalValid != "YES")
+            {
+               document.writeln(" value='Unavailable' ");
+            }
+            document.writeln("disabled></td>");
+            document.writeln("</tr>");
+         }
+
+         document.writeln("</tbody></table>");
+      }
+   }
+
+}
+
+function createCallLogStats() {
+   document.writeln("<div class='tabContent' id='1'>");
+   document.writeln("<div>");
+
+   document.writeln("   <br>");
+   document.writeln("   <br>");
+                        createHistoryTable();
+   document.writeln("   <br>");
+   document.writeln("   <br>");
+   document.writeln("   <center>");
+   document.writeln("       <input type='button' onClick='btnRefresh()' value='Refresh' id='RefreshButton" + 1 + "' disabled=true>");
+   document.writeln("       <br>");
+   document.writeln("    </center>");
+   document.writeln("    <br>");
+   document.writeln("</div>");
+   document.writeln("</div>");
+}
+
+////////////////////
+// END OF JAVASCRIPT
+////////////////////
+
+</script>
+</head>
+
+<body onLoad="frmLoad('stats')">
+   <blockquote>
+      <form>
+      <script TYPE="text/javascript">
+         createTabs();
+         createRtpStats();
+         createCallLogStats();
+
+         for (var i = 0; i < numVoiceButtonSets; i++) {
+            enableVoiceButtons(i);
+         }
+
+      </script>
+
+      </form>
+   </blockquote>
+</body>
+</html>

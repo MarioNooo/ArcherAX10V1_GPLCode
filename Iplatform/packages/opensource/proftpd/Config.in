@@ -1,0 +1,7 @@
+config proftpd-in-fit
+	bool "reduce proftpd"
+	default n
+	depends PACKAGE_proftpd
+	help
+	  Feature: cut off some optionsal features of proftpd.
+

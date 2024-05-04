@@ -1,0 +1,10 @@
+prefix=/home/tp/code/ax10v1_GPL/bcm675x/bcm963xx/bcmdrivers/broadcom/net/wl/impl59/main/components/opensource/router_tools/libnl/install
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: libnl
+Description: Convenience library for netlink sockets
+Version: 3.2.25
+Libs: -L${libdir} -lnl-3
+Cflags: -I${includedir}/libnl3

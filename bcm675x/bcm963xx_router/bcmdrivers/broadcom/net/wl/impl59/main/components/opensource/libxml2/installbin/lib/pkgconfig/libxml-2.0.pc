@@ -1,0 +1,13 @@
+prefix=/home/tp/code/ax10v1_GPL/bcm675x/bcm963xx/bcmdrivers/broadcom/net/wl/impl59/main/components/opensource/libxml2/installbin
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+modules=1
+
+Name: libXML
+Version: 2.9.0
+Description: libXML library version2.
+Requires:
+Libs: -L${libdir} -lxml2
+Libs.private:     -lm  
+Cflags: -I${includedir}/libxml2 

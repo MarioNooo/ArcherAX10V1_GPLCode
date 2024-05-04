@@ -1,0 +1,1078 @@
+AUTODIRS := gpl/apps/accel-pptp gpl/apps/alsa-utils gpl/apps/atm2684 gpl/apps/bridge-utils gpl/apps/busybox gpl/apps/conntrack gpl/apps/dhcpclient gpl/apps/dproxy-nexgen gpl/apps/e2fsprogs gpl/apps/ebtables gpl/apps/ethtool gpl/apps/felix_framework gpl/apps/ftpd gpl/apps/gptdfisk gpl/apps/i2c-tools gpl/apps/iproute2 gpl/apps/ipset gpl/apps/iptables gpl/apps/ivictl gpl/apps/jamvm gpl/apps/linuxptp gpl/apps/lmbench gpl/apps/lxc gpl/apps/mmc-utils gpl/apps/mtd gpl/apps/ndisc6 gpl/apps/ntfs-3g gpl/apps/openl2tpd gpl/apps/openvpn gpl/apps/openwrt gpl/apps/pciutils gpl/apps/ppp gpl/apps/pptp gpl/apps/rng-tools-2 gpl/apps/samba gpl/apps/strace gpl/apps/stress gpl/apps/strongswan gpl/apps/sysstat gpl/apps/udhcp gpl/apps/urlfilterd gpl/apps/zebra gpl/libs/alsa-lib gpl/libs/classpath gpl/libs/lzo gpl/libs/mnl gpl/libs/netfilter_conntrack gpl/libs/netfilter_cthelper gpl/libs/netfilter_cttimeout gpl/libs/netfilter_queue gpl/libs/nfnetlink private/apps/archerctl private/apps/bcmmcastctl private/apps/blogctl private/apps/bpmctl private/apps/consoled private/apps/ddnsd private/apps/dnsspoof private/apps/ethctl private/apps/ethswctl private/apps/fcctl private/apps/hotplug private/apps/httpd private/apps/ippd private/apps/iqctl private/apps/mcpctl private/apps/mcpd private/apps/pwrctl private/apps/rastatus6 private/apps/smd private/apps/ssk private/apps/telnetd private/apps/tmctl private/apps/tmsctl private/apps/upnp private/apps/vlanctl private/apps/vpmstats private/apps/websockd private/libs/atmctl private/libs/bcmmcast private/libs/blogctl private/libs/bridgeutil private/libs/cms_cli private/libs/cms_core private/libs/cms_dal private/libs/cms_qdm private/libs/ethctl private/libs/ethswctl private/libs/fcctl private/libs/iqctl private/libs/mdm2 private/libs/nanoxml private/libs/pmd private/libs/pwrctl private/libs/staged private/libs/tmctl private/libs/vlanctl private/libs/wlmdm private/libs/wlsysutil public/apps/bcm_boot_launcher public/apps/bcm_bootstate public/apps/bcm_flasher public/apps/bdmf_shell public/apps/boot_block_housekeeping public/apps/cgroupctl public/apps/dhcpv6 public/apps/dhrystone public/apps/fping public/apps/gencfg_tools public/apps/iperf3 public/apps/iperf public/apps/ledctl public/apps/memaccess public/apps/openvswitch public/apps/pppd public/apps/psictl public/apps/radvd public/apps/redsocks public/apps/scratchpadctl public/apps/scripts public/apps/send_cms_msg public/apps/sendpackets public/apps/simcard public/apps/tcpdump public/apps/tracectl public/apps/udp_spd_test public/apps/wanconf public/apps/wdtctl public/libs/alljoyn public/libs/bcm_boardctl public/libs/bcm_failsafe_boot public/libs/bcm_flashutil public/libs/bcm_sslconf public/libs/bcm_util public/libs/bdmf public/libs/brcmssp_util public/libs/cms_msg public/libs/cms_util public/libs/curl public/libs/d3 public/libs/expat public/libs/gen_util public/libs/gst-plugins-base public/libs/gst-plugins-good public/libs/gst-plugins-ugly public/libs/httpdshared public/libs/jpeg public/libs/jqplot public/libs/jquery public/libs/jsonc public/libs/libcap public/libs/libevent public/libs/libnl public/libs/libpcap public/libs/libxml2 public/libs/microhttpd public/libs/miniupnpc public/libs/nghttp2 public/libs/openssl public/libs/popt public/libs/qrcode public/libs/seccomp public/libs/sigma public/libs/sqlite public/libs/stlport public/libs/strophe public/libs/sys_util public/libs/tablesorter public/libs/treetable public/libs/tzdb public/libs/uuid public/libs/websockets
+gpl/apps/accel-pptp: 
+	$(MAKE) -C gpl/apps/accel-pptp  
+
+.PHONY : gpl/apps/accel-pptp
+
+gpl/apps/alsa-utils: gpl/libs/alsa-lib
+	$(MAKE) -C gpl/apps/alsa-utils  
+
+.PHONY : gpl/apps/alsa-utils
+
+gpl/apps/atm2684: 
+ifneq ($(strip $(BUILD_DRIVER_XTM)),)
+	$(MAKE) -C gpl/apps/atm2684  
+else
+	@echo "gpl/apps/atm2684 is skipped (not selected)"
+endif
+
+.PHONY : gpl/apps/atm2684
+
+gpl/apps/bridge-utils: 
+	$(MAKE) -C gpl/apps/bridge-utils  
+
+.PHONY : gpl/apps/bridge-utils
+
+gpl/apps/busybox: public/libs/cms_msg public/libs/cms_util public/libs/bcm_flashutil public/libs/bcm_boardctl
+	$(MAKE) -C gpl/apps/busybox  
+
+.PHONY : gpl/apps/busybox
+
+gpl/apps/conntrack: gpl/libs/nfnetlink gpl/libs/mnl gpl/libs/netfilter_conntrack gpl/libs/netfilter_cttimeout gpl/libs/netfilter_queue gpl/libs/netfilter_cthelper
+ifneq ($(or $(BUILD_LIBNETFILTER_CONNTRACK),$(BUILD_LIBNETFILTER_CTIMEOUT),$(BUILD_LIBNETFILTER_QUEUE),$(BUILD_LIBNETFILTER_CTHELPER)),)
+	$(MAKE) -C gpl/apps/conntrack  
+else
+	@echo "gpl/apps/conntrack is skipped (not selected)"
+endif
+
+.PHONY : gpl/apps/conntrack
+
+gpl/apps/dhcpclient: 
+	$(MAKE) -C gpl/apps/dhcpclient  
+
+.PHONY : gpl/apps/dhcpclient
+
+gpl/apps/dproxy-nexgen: public/libs/bcm_util public/libs/cms_msg public/libs/cms_util public/libs/bcm_flashutil public/libs/bcm_boardctl
+ifneq ($(strip $(BUILD_BRCM_CMS)),)
+	$(MAKE) -C gpl/apps/dproxy-nexgen  
+else
+	@echo "gpl/apps/dproxy-nexgen is skipped (not selected)"
+endif
+
+.PHONY : gpl/apps/dproxy-nexgen
+
+gpl/apps/e2fsprogs: 
+	$(MAKE) -C gpl/apps/e2fsprogs  
+
+.PHONY : gpl/apps/e2fsprogs
+
+gpl/apps/ebtables: 
+	$(MAKE) -C gpl/apps/ebtables  
+
+.PHONY : gpl/apps/ebtables
+
+gpl/apps/ethtool: 
+	$(MAKE) -C gpl/apps/ethtool  
+
+.PHONY : gpl/apps/ethtool
+
+gpl/apps/felix_framework: 
+	$(MAKE) -C gpl/apps/felix_framework  
+
+.PHONY : gpl/apps/felix_framework
+
+gpl/apps/ftpd: public/libs/cms_msg public/libs/cms_util public/libs/bcm_flashutil public/libs/bcm_boardctl
+ifneq ($(strip $(BUILD_BRCM_CMS)),)
+	$(MAKE) -C gpl/apps/ftpd  
+else
+	@echo "gpl/apps/ftpd is skipped (not selected)"
+endif
+
+.PHONY : gpl/apps/ftpd
+
+gpl/apps/gptdfisk: public/libs/popt public/libs/uuid public/libs/stlport
+	$(MAKE) -C gpl/apps/gptdfisk -f Bcmbuild.mk 
+
+.PHONY : gpl/apps/gptdfisk
+
+gpl/apps/i2c-tools: 
+ifneq ($(strip $(BRCM_DRIVER_I2C)),)
+	$(MAKE) -C gpl/apps/i2c-tools  
+else
+	@echo "gpl/apps/i2c-tools is skipped (not selected)"
+endif
+
+.PHONY : gpl/apps/i2c-tools
+
+gpl/apps/iproute2: 
+	$(MAKE) -C gpl/apps/iproute2  
+
+.PHONY : gpl/apps/iproute2
+
+gpl/apps/ipset: gpl/libs/mnl
+	$(MAKE) -C gpl/apps/ipset  
+
+.PHONY : gpl/apps/ipset
+
+gpl/apps/iptables: 
+	$(MAKE) -C gpl/apps/iptables  
+
+.PHONY : gpl/apps/iptables
+
+gpl/apps/ivictl: 
+ifneq ($(strip $(BUILD_URLFILTER)),)
+	$(MAKE) -C gpl/apps/ivictl  $(BUILD_URLFILTER)
+else
+	@echo "gpl/apps/ivictl is skipped (not selected)"
+endif
+
+.PHONY : gpl/apps/ivictl
+
+gpl/apps/jamvm: 
+	$(MAKE) -C gpl/apps/jamvm  
+
+.PHONY : gpl/apps/jamvm
+
+gpl/apps/linuxptp: 
+ifneq ($(and $(strip $(BRCM_PTP_1588)),$(strip $(BCM_PON_XRDP))),)
+	$(MAKE) -C gpl/apps/linuxptp  
+else
+	@echo "gpl/apps/linuxptp is skipped (not selected)"
+endif
+
+.PHONY : gpl/apps/linuxptp
+
+gpl/apps/lmbench: 
+	$(MAKE) -C gpl/apps/lmbench  
+
+.PHONY : gpl/apps/lmbench
+
+gpl/apps/lxc: public/libs/seccomp
+	$(MAKE) -C gpl/apps/lxc  
+
+.PHONY : gpl/apps/lxc
+
+gpl/apps/mmc-utils: 
+	$(MAKE) -C gpl/apps/mmc-utils -f Bcmbuild.mk 
+
+.PHONY : gpl/apps/mmc-utils
+
+gpl/apps/mtd: 
+	$(MAKE) -C gpl/apps/mtd  
+
+.PHONY : gpl/apps/mtd
+
+gpl/apps/ndisc6: 
+ifneq ($(and $(strip $(BUILD_ANY_CMS_IPV6)),$(strip $(BUILD_PURE181_PROFILES))),)
+	$(MAKE) -C gpl/apps/ndisc6  
+else
+	@echo "gpl/apps/ndisc6 is skipped (not selected)"
+endif
+
+.PHONY : gpl/apps/ndisc6
+
+gpl/apps/ntfs-3g: 
+	$(MAKE) -C gpl/apps/ntfs-3g  
+
+.PHONY : gpl/apps/ntfs-3g
+
+gpl/apps/openl2tpd: 
+	$(MAKE) -C gpl/apps/openl2tpd  
+
+.PHONY : gpl/apps/openl2tpd
+
+gpl/apps/openvpn: public/libs/openssl gpl/libs/lzo
+	$(MAKE) -C gpl/apps/openvpn  
+
+.PHONY : gpl/apps/openvpn
+
+gpl/apps/openwrt: gpl/apps/lxc
+	$(MAKE) -C gpl/apps/openwrt  
+
+.PHONY : gpl/apps/openwrt
+
+gpl/apps/pciutils: 
+	$(MAKE) -C gpl/apps/pciutils  
+
+.PHONY : gpl/apps/pciutils
+
+gpl/apps/ppp: 
+	$(MAKE) -C gpl/apps/ppp  
+
+.PHONY : gpl/apps/ppp
+
+gpl/apps/pptp: 
+	$(MAKE) -C gpl/apps/pptp  
+
+.PHONY : gpl/apps/pptp
+
+gpl/apps/rng-tools-2: 
+	$(MAKE) -C gpl/apps/rng-tools-2  
+
+.PHONY : gpl/apps/rng-tools-2
+
+gpl/apps/samba: public/libs/brcmssp_util
+	$(MAKE) -C gpl/apps/samba  
+
+.PHONY : gpl/apps/samba
+
+gpl/apps/strace: 
+	$(MAKE) -C gpl/apps/strace  
+
+.PHONY : gpl/apps/strace
+
+gpl/apps/stress: 
+	$(MAKE) -C gpl/apps/stress  
+
+.PHONY : gpl/apps/stress
+
+gpl/apps/strongswan: public/libs/openssl gpl/libs/netfilter_conntrack gpl/libs/nfnetlink
+	$(MAKE) -C gpl/apps/strongswan  
+
+.PHONY : gpl/apps/strongswan
+
+gpl/apps/sysstat: 
+	$(MAKE) -C gpl/apps/sysstat  
+
+.PHONY : gpl/apps/sysstat
+
+gpl/apps/udhcp: public/libs/cms_msg public/libs/cms_util public/libs/bcm_flashutil
+ifneq ($(and $(strip $(BUILD_BRCM_CMS)),$(strip $(BUILD_UDHCP))),)
+	$(MAKE) -C gpl/apps/udhcp  $(BUILD_UDHCP)
+else
+	@echo "gpl/apps/udhcp is skipped (not selected)"
+endif
+
+.PHONY : gpl/apps/udhcp
+
+gpl/apps/urlfilterd: 
+ifneq ($(strip $(BUILD_URLFILTER)),)
+	$(MAKE) -C gpl/apps/urlfilterd  $(BUILD_URLFILTER)
+else
+	@echo "gpl/apps/urlfilterd is skipped (not selected)"
+endif
+
+.PHONY : gpl/apps/urlfilterd
+
+gpl/apps/zebra: private/libs/cms_core
+	$(MAKE) -C gpl/apps/zebra  
+
+.PHONY : gpl/apps/zebra
+
+gpl/libs/alsa-lib: 
+	$(MAKE) -C gpl/libs/alsa-lib  
+
+.PHONY : gpl/libs/alsa-lib
+
+gpl/libs/classpath: 
+	$(MAKE) -C gpl/libs/classpath  
+
+.PHONY : gpl/libs/classpath
+
+gpl/libs/lzo: 
+	$(MAKE) -C gpl/libs/lzo  
+
+.PHONY : gpl/libs/lzo
+
+gpl/libs/mnl: 
+	$(MAKE) -C gpl/libs/mnl  
+
+.PHONY : gpl/libs/mnl
+
+gpl/libs/netfilter_conntrack: gpl/libs/mnl gpl/libs/nfnetlink
+	$(MAKE) -C gpl/libs/netfilter_conntrack  
+
+.PHONY : gpl/libs/netfilter_conntrack
+
+gpl/libs/netfilter_cthelper: gpl/libs/mnl gpl/libs/nfnetlink
+	$(MAKE) -C gpl/libs/netfilter_cthelper  
+
+.PHONY : gpl/libs/netfilter_cthelper
+
+gpl/libs/netfilter_cttimeout: gpl/libs/mnl gpl/libs/nfnetlink
+	$(MAKE) -C gpl/libs/netfilter_cttimeout  
+
+.PHONY : gpl/libs/netfilter_cttimeout
+
+gpl/libs/netfilter_queue: gpl/libs/mnl gpl/libs/nfnetlink
+	$(MAKE) -C gpl/libs/netfilter_queue  
+
+.PHONY : gpl/libs/netfilter_queue
+
+gpl/libs/nfnetlink: 
+	$(MAKE) -C gpl/libs/nfnetlink  
+
+.PHONY : gpl/libs/nfnetlink
+
+private/apps/archerctl: 
+ifneq ($(strip $(BUILD_ARCHERCTL)),)
+	$(MAKE) -C private/apps/archerctl  
+else
+	@echo "private/apps/archerctl is skipped (not selected)"
+endif
+
+.PHONY : private/apps/archerctl
+
+private/apps/bcmmcastctl: private/libs/bcmmcast
+	$(MAKE) -C private/apps/bcmmcastctl  
+
+.PHONY : private/apps/bcmmcastctl
+
+private/apps/blogctl: private/libs/blogctl
+ifneq ($(strip $(BUILD_BLOGCTL)),)
+	$(MAKE) -C private/apps/blogctl  $(BUILD_BLOGCTL)
+else
+	@echo "private/apps/blogctl is skipped (not selected)"
+endif
+
+.PHONY : private/apps/blogctl
+
+private/apps/bpmctl: 
+ifneq ($(strip $(BUILD_BPMCTL)),)
+	$(MAKE) -C private/apps/bpmctl  $(BUILD_BPMCTL)
+else
+	@echo "private/apps/bpmctl is skipped (not selected)"
+endif
+
+.PHONY : private/apps/bpmctl
+
+private/apps/consoled: public/libs/cms_msg public/libs/cms_util public/libs/bcm_flashutil public/libs/bcm_boardctl private/libs/cms_dal private/libs/cms_cli private/libs/cms_core private/libs/cms_qdm private/libs/nanoxml private/libs/tmctl private/libs/bcmmcast private/libs/seltctl private/libs/xdslctl private/libs/atmctl private/libs/ethctl public/libs/jsonc private/libs/pmd
+ifneq ($(strip $(BUILD_CONSOLED)),)
+	$(MAKE) -C private/apps/consoled  
+else
+	@echo "private/apps/consoled is skipped (not selected)"
+endif
+
+.PHONY : private/apps/consoled
+
+private/apps/ddnsd: public/libs/cms_msg public/libs/cms_util public/libs/bcm_flashutil public/libs/bcm_boardctl
+ifneq ($(and $(strip $(BUILD_BRCM_CMS)),$(strip $(BUILD_DDNSD))),)
+	$(MAKE) -C private/apps/ddnsd  $(BUILD_DDNSD)
+else
+	@echo "private/apps/ddnsd is skipped (not selected)"
+endif
+
+.PHONY : private/apps/ddnsd
+
+private/apps/dnsspoof: 
+ifneq ($(strip $(BUILD_DNSSPOOF)),)
+	$(MAKE) -C private/apps/dnsspoof  $(BUILD_DNSSPOOF)
+else
+	@echo "private/apps/dnsspoof is skipped (not selected)"
+endif
+
+.PHONY : private/apps/dnsspoof
+
+private/apps/ethctl: private/libs/ethctl
+	$(MAKE) -C private/apps/ethctl  dynamic
+
+.PHONY : private/apps/ethctl
+
+private/apps/ethswctl: private/libs/ethswctl public/libs/bcm_flashutil public/libs/bcm_util
+ifneq ($(strip $(BUILD_ETHSWCTL)),)
+	$(MAKE) -C private/apps/ethswctl  
+else
+	@echo "private/apps/ethswctl is skipped (not selected)"
+endif
+
+.PHONY : private/apps/ethswctl
+
+private/apps/fcctl: private/libs/fcctl
+ifneq ($(strip $(BUILD_FCCTL)),)
+	$(MAKE) -C private/apps/fcctl  $(BUILD_FCCTL)
+else
+	@echo "private/apps/fcctl is skipped (not selected)"
+endif
+
+.PHONY : private/apps/fcctl
+
+private/apps/hotplug: public/libs/cms_msg public/libs/cms_util public/libs/bcm_flashutil public/libs/bcm_boardctl private/libs/wlcsm
+ifneq ($(if $(BUILD_BRCM_HNDROUTER_ALONE),,$(strip $(BUILD_NAS))$(strip $(LINUX_KERNEL_USBMASS))),)
+	$(MAKE) -C private/apps/hotplug  
+else
+	@echo "private/apps/hotplug is skipped (not selected)"
+endif
+
+.PHONY : private/apps/hotplug
+
+private/apps/httpd: public/libs/openssl public/libs/expat public/libs/bcm_sslconf public/libs/httpdshared public/libs/nghttp2 private/apps/nvram private/apps/hndrouter private/libs/wlsysutil private/apps/wlan
+ifneq ($(strip $(BUILD_ANY_CMS_HTTPD)),)
+	$(MAKE) -C private/apps/httpd  
+else
+	@echo "private/apps/httpd is skipped (not selected)"
+endif
+
+.PHONY : private/apps/httpd
+
+private/apps/ippd: public/libs/cms_msg public/libs/cms_util public/libs/bcm_flashutil public/libs/bcm_boardctl
+ifneq ($(strip $(BUILD_BRCM_CMS)),)
+	$(MAKE) -C private/apps/ippd  $(BUILD_IPPD)
+else
+	@echo "private/apps/ippd is skipped (not selected)"
+endif
+
+.PHONY : private/apps/ippd
+
+private/apps/iqctl: private/libs/iqctl
+ifneq ($(strip $(BUILD_IQCTL)),)
+	$(MAKE) -C private/apps/iqctl  $(BUILD_IQCTL)
+else
+	@echo "private/apps/iqctl is skipped (not selected)"
+endif
+
+.PHONY : private/apps/iqctl
+
+private/apps/mcpctl: 
+	$(MAKE) -C private/apps/mcpctl  
+
+.PHONY : private/apps/mcpctl
+
+private/apps/mcpd: public/libs/bcm_util private/libs/bcmmcast private/libs/bridgeutil public/libs/cms_msg public/libs/cms_util public/libs/bcm_flashutil
+	$(MAKE) -C private/apps/mcpd  
+
+.PHONY : private/apps/mcpd
+
+private/apps/pwrctl: private/libs/ethswctl private/libs/pwrctl public/libs/cms_msg public/libs/cms_util public/libs/bcm_flashutil public/libs/bcm_boardctl public/libs/bcm_util
+ifneq ($(strip $(BUILD_PWRCTL)),)
+	$(MAKE) -C private/apps/pwrctl  
+else
+	@echo "private/apps/pwrctl is skipped (not selected)"
+endif
+
+.PHONY : private/apps/pwrctl
+
+private/apps/rastatus6: public/libs/cms_msg public/libs/cms_util public/libs/bcm_flashutil public/libs/bcm_boardctl private/libs/tmctl private/libs/cms_core private/libs/cms_qdm private/libs/xdslctl private/libs/vlanctl private/libs/seltctl private/libs/bridgeutil private/libs/pwrctl
+ifneq ($(strip $(BUILD_ANY_CMS_IPV6)),)
+	$(MAKE) -C private/apps/rastatus6  
+else
+	@echo "private/apps/rastatus6 is skipped (not selected)"
+endif
+
+.PHONY : private/apps/rastatus6
+
+private/apps/smd: public/libs/cms_msg public/libs/cms_util public/libs/bcm_flashutil public/libs/bcm_boardctl private/libs/tmctl private/libs/cms_core private/libs/cms_qdm private/libs/xdslctl private/libs/vlanctl private/libs/nanoxml
+ifneq ($(strip $(BUILD_BRCM_CMS)),)
+	$(MAKE) -C private/apps/smd  
+else
+	@echo "private/apps/smd is skipped (not selected)"
+endif
+
+.PHONY : private/apps/smd
+
+private/apps/ssk: public/libs/cms_msg public/libs/cms_util public/libs/bcm_flashutil public/libs/bcm_boardctl private/libs/tmctl private/libs/cms_core private/libs/cms_qdm private/libs/xdslctl private/libs/vlanctl private/libs/seltctl private/libs/nanoxml private/libs/atmctl private/libs/bridgeutil
+ifneq ($(strip $(BUILD_BRCM_CMS)),)
+	$(MAKE) -C private/apps/ssk  
+else
+	@echo "private/apps/ssk is skipped (not selected)"
+endif
+
+.PHONY : private/apps/ssk
+
+private/apps/telnetd: public/libs/cms_msg public/libs/cms_util public/libs/bcm_flashutil public/libs/bcm_boardctl private/libs/cms_dal private/libs/cms_cli private/libs/cms_core private/libs/cms_qdm private/libs/nanoxml private/libs/tmctl public/libs/jsonc private/libs/pmd
+ifneq ($(strip $(BUILD_BRCM_CMS)),)
+	$(MAKE) -C private/apps/telnetd  
+else
+	@echo "private/apps/telnetd is skipped (not selected)"
+endif
+
+.PHONY : private/apps/telnetd
+
+private/apps/tmctl: private/libs/tmctl public/libs/bcm_flashutil public/libs/bcm_boardctl
+	$(MAKE) -C private/apps/tmctl  
+
+.PHONY : private/apps/tmctl
+
+private/apps/tmsctl: 
+	$(MAKE) -C private/apps/tmsctl  
+
+.PHONY : private/apps/tmsctl
+
+private/apps/upnp: private/libs/cms_core private/libs/tmctl
+ifneq ($(strip $(BUILD_ANY_CMS_UPNP)),)
+	$(MAKE) -C private/apps/upnp  $(BUILD_UPNP)
+else
+	@echo "private/apps/upnp is skipped (not selected)"
+endif
+
+.PHONY : private/apps/upnp
+
+private/apps/vlanctl: private/libs/vlanctl
+ifneq ($(strip $(BUILD_VLANCTL)),)
+	$(MAKE) -C private/apps/vlanctl  
+else
+	@echo "private/apps/vlanctl is skipped (not selected)"
+endif
+
+.PHONY : private/apps/vlanctl
+
+private/apps/vpmstats: 
+	$(MAKE) -C private/apps/vpmstats  
+
+.PHONY : private/apps/vpmstats
+
+private/apps/websockd: public/libs/websockets private/libs/cms_core public/libs/cms_msg
+	$(MAKE) -C private/apps/websockd  
+
+.PHONY : private/apps/websockd
+
+private/libs/atmctl: public/libs/bcm_util public/libs/bcm_boardctl
+	$(MAKE) -C private/libs/atmctl -f Bcmbuild.mk 
+
+.PHONY : private/libs/atmctl
+
+private/libs/bcmmcast: 
+	$(MAKE) -C private/libs/bcmmcast  
+
+.PHONY : private/libs/bcmmcast
+
+private/libs/blogctl: 
+ifneq ($(strip $(BUILD_BLOGCTL)),)
+	$(MAKE) -C private/libs/blogctl  
+else
+	@echo "private/libs/blogctl is skipped (not selected)"
+endif
+
+.PHONY : private/libs/blogctl
+
+private/libs/bridgeutil: 
+ifneq ($(strip $(BUILD_BRCTL)),)
+	$(MAKE) -C private/libs/bridgeutil  
+else
+	@echo "private/libs/bridgeutil is skipped (not selected)"
+endif
+
+.PHONY : private/libs/bridgeutil
+
+private/libs/cms_cli: public/libs/jsonc private/libs/pmd private/libs/wlcsm
+	$(MAKE) -C private/libs/cms_cli  
+
+.PHONY : private/libs/cms_cli
+
+private/libs/cms_core: public/libs/bcm_util public/libs/cms_msg public/libs/cms_util public/libs/bcm_flashutil public/libs/bcm_boardctl private/libs/atmctl private/libs/bcmipc private/libs/bcmmcast private/libs/bcmtm private/libs/bridgeutil private/libs/cms_cli private/libs/cms_dal private/libs/cms_qdm private/libs/ethswctl private/libs/fapctl private/libs/fcctl private/libs/gmacctl private/libs/gponctl private/libs/i5api private/libs/iqctl private/libs/mdk private/libs/mdm private/libs/mdm2 private/libs/mocactl private/libs/nanoxml private/libs/pwrctl private/libs/rdpactl private/libs/seltctl private/libs/simcardctl private/libs/spdsvc private/libs/spuctl private/libs/tmctl private/libs/tr143_utils private/libs/vlanctl private/libs/wlcsm private/libs/wlsysutil private/libs/xdslctl private/libs/ethctl
+	$(MAKE) -C private/libs/cms_core  
+
+.PHONY : private/libs/cms_core
+
+private/libs/cms_dal: private/libs/i5api private/libs/wlsysutil
+ifneq ($(strip $(BUILD_BRCM_CMS)),)
+	$(MAKE) -C private/libs/cms_dal  
+else
+	@echo "private/libs/cms_dal is skipped (not selected)"
+endif
+
+.PHONY : private/libs/cms_dal
+
+private/libs/cms_qdm: private/libs/i5api
+ifneq ($(strip $(BUILD_BRCM_CMS)),)
+	$(MAKE) -C private/libs/cms_qdm  
+else
+	@echo "private/libs/cms_qdm is skipped (not selected)"
+endif
+
+.PHONY : private/libs/cms_qdm
+
+private/libs/ethctl: 
+	$(MAKE) -C private/libs/ethctl  
+
+.PHONY : private/libs/ethctl
+
+private/libs/ethswctl: 
+ifneq ($(strip $(BUILD_ETHSWCTL)),)
+	$(MAKE) -C private/libs/ethswctl  
+else
+	@echo "private/libs/ethswctl is skipped (not selected)"
+endif
+
+.PHONY : private/libs/ethswctl
+
+private/libs/fcctl: 
+ifneq ($(strip $(BUILD_FCCTL)),)
+	$(MAKE) -C private/libs/fcctl  
+else
+	@echo "private/libs/fcctl is skipped (not selected)"
+endif
+
+.PHONY : private/libs/fcctl
+
+private/libs/iqctl: 
+ifneq ($(strip $(BUILD_IQCTL)),)
+	$(MAKE) -C private/libs/iqctl  
+else
+	@echo "private/libs/iqctl is skipped (not selected)"
+endif
+
+.PHONY : private/libs/iqctl
+
+private/libs/mdm2: 
+	$(MAKE) -C private/libs/mdm2  
+
+.PHONY : private/libs/mdm2
+
+private/libs/nanoxml: private/libs/i5api
+ifneq ($(strip $(BUILD_BRCM_CMS)),)
+	$(MAKE) -C private/libs/nanoxml  
+else
+	@echo "private/libs/nanoxml is skipped (not selected)"
+endif
+
+.PHONY : private/libs/nanoxml
+
+private/libs/pmd: public/libs/jsonc
+	$(MAKE) -C private/libs/pmd -f Bcmbuild.mk 
+
+.PHONY : private/libs/pmd
+
+private/libs/pwrctl: 
+ifneq ($(strip $(BUILD_PWRCTL)),)
+	$(MAKE) -C private/libs/pwrctl  
+else
+	@echo "private/libs/pwrctl is skipped (not selected)"
+endif
+
+.PHONY : private/libs/pwrctl
+
+private/libs/staged: public/libs/jsonc public/libs/bcm_util
+ifneq ($(strip $(BUILD_BRCM_UNFWLCFG)),)
+	$(MAKE) -C private/libs/staged  
+else
+	@echo "private/libs/staged is skipped (not selected)"
+endif
+
+.PHONY : private/libs/staged
+
+private/libs/tmctl: private/libs/ethswctl private/libs/rdpactl private/libs/fapctl private/libs/bcmtm public/libs/bdmf public/libs/bcm_flashutil public/libs/bcm_boardctl
+	$(MAKE) -C private/libs/tmctl  
+
+.PHONY : private/libs/tmctl
+
+private/libs/vlanctl: 
+ifneq ($(strip $(BUILD_VLANCTL)),)
+	$(MAKE) -C private/libs/vlanctl  
+else
+	@echo "private/libs/vlanctl is skipped (not selected)"
+endif
+
+.PHONY : private/libs/vlanctl
+
+private/libs/wlmdm: private/libs/cms_core private/libs/staged public/libs/cms_util public/libs/cms_msg public/libs/jsonc
+ifneq ($(and $(strip $(BUILD_BRCM_CMS)),$(strip $(BUILD_BRCM_UNFWLCFG))),)
+	$(MAKE) -C private/libs/wlmdm  
+else
+	@echo "private/libs/wlmdm is skipped (not selected)"
+endif
+
+.PHONY : private/libs/wlmdm
+
+private/libs/wlsysutil: 
+	$(MAKE) -C private/libs/wlsysutil -f Bcmbuild.mk 
+
+.PHONY : private/libs/wlsysutil
+
+public/apps/bcm_boot_launcher: public/libs/bcm_util
+	$(MAKE) -C public/apps/bcm_boot_launcher -f Bcmbuild.mk 
+
+.PHONY : public/apps/bcm_boot_launcher
+
+public/apps/bcm_bootstate: public/libs/bcm_util public/libs/sys_util public/libs/gen_util public/libs/bcm_flashutil public/libs/bcm_boardctl
+	$(MAKE) -C public/apps/bcm_bootstate  
+
+.PHONY : public/apps/bcm_bootstate
+
+public/apps/bcm_flasher: public/libs/bcm_flashutil public/libs/bcm_boardctl public/libs/bcm_util public/libs/sys_util public/libs/gen_util
+	$(MAKE) -C public/apps/bcm_flasher  
+
+.PHONY : public/apps/bcm_flasher
+
+public/apps/bdmf_shell: public/libs/cms_msg public/libs/cms_util public/libs/bcm_flashutil public/libs/bcm_boardctl
+	$(MAKE) -C public/apps/bdmf_shell  
+
+.PHONY : public/apps/bdmf_shell
+
+public/apps/boot_block_housekeeping: public/libs/bcm_flashutil public/libs/bcm_boardctl
+ifneq ($(or $(strip $(BUILD_BOOT_BLOCK_HOUSEKEEPING))),)
+	$(MAKE) -C public/apps/boot_block_housekeeping  
+else
+	@echo "public/apps/boot_block_housekeeping is skipped (not selected)"
+endif
+
+.PHONY : public/apps/boot_block_housekeeping
+
+public/apps/cgroupctl: 
+	$(MAKE) -C public/apps/cgroupctl  
+
+.PHONY : public/apps/cgroupctl
+
+public/apps/dhcpv6: public/libs/cms_msg public/libs/cms_util public/libs/bcm_flashutil public/libs/bcm_boardctl
+ifneq ($(and $(strip $(BUILD_BRCM_CMS)),$(strip $(BUILD_UDHCP))),)
+	$(MAKE) -C public/apps/dhcpv6  
+else
+	@echo "public/apps/dhcpv6 is skipped (not selected)"
+endif
+
+.PHONY : public/apps/dhcpv6
+
+public/apps/dhrystone: 
+ifneq ($(strip $(BENCHMARKS_SMP)),)
+	$(MAKE) -C public/apps/dhrystone  
+else
+	@echo "public/apps/dhrystone is skipped (not selected)"
+endif
+
+.PHONY : public/apps/dhrystone
+
+public/apps/fping: 
+	$(MAKE) -C public/apps/fping  
+
+.PHONY : public/apps/fping
+
+public/apps/gencfg_tools: 
+	$(MAKE) -C public/apps/gencfg_tools  
+
+.PHONY : public/apps/gencfg_tools
+
+public/apps/iperf3: 
+	$(MAKE) -C public/apps/iperf3  
+
+.PHONY : public/apps/iperf3
+
+public/apps/iperf: public/libs/stlport
+	$(MAKE) -C public/apps/iperf  
+
+.PHONY : public/apps/iperf
+
+public/apps/ledctl: public/libs/cms_msg public/libs/cms_util public/libs/bcm_flashutil public/libs/bcm_boardctl
+ifneq ($(strip $(BUILD_LEDCTL)),)
+	$(MAKE) -C public/apps/ledctl  
+else
+	@echo "public/apps/ledctl is skipped (not selected)"
+endif
+
+.PHONY : public/apps/ledctl
+
+public/apps/memaccess: 
+	$(MAKE) -C public/apps/memaccess  
+
+.PHONY : public/apps/memaccess
+
+public/apps/openvswitch: private/libs/bcmmcast public/libs/openssl
+ifneq ($(strip $(BUILD_OPENVSWITCH)),)
+	$(MAKE) -C public/apps/openvswitch  
+else
+	@echo "public/apps/openvswitch is skipped (not selected)"
+endif
+
+.PHONY : public/apps/openvswitch
+
+public/apps/pppd: public/libs/cms_msg public/libs/cms_util public/libs/bcm_flashutil public/libs/bcm_boardctl
+ifneq ($(or (strip $(BUILD_BRCM_CMS)),$(BUILD_BRCM_HNDROUTER)),)
+	$(MAKE) -C public/apps/pppd  
+else
+	@echo "public/apps/pppd is skipped (not selected)"
+endif
+
+.PHONY : public/apps/pppd
+
+public/apps/psictl: public/libs/bcm_util public/libs/sys_util public/libs/gen_util public/libs/bcm_flashutil public/libs/bcm_boardctl
+	$(MAKE) -C public/apps/psictl  
+
+.PHONY : public/apps/psictl
+
+public/apps/radvd: public/libs/cms_msg public/libs/cms_util public/libs/bcm_flashutil public/libs/bcm_boardctl
+ifneq ($(or $(BUILD_BRCM_CMS),$(BUILD_BRCM_HNDROUTER)),)
+	$(MAKE) -C public/apps/radvd  
+else
+	@echo "public/apps/radvd is skipped (not selected)"
+endif
+
+.PHONY : public/apps/radvd
+
+public/apps/redsocks: public/libs/libevent
+	$(MAKE) -C public/apps/redsocks  
+
+.PHONY : public/apps/redsocks
+
+public/apps/scratchpadctl: public/libs/bcm_util public/libs/sys_util public/libs/gen_util public/libs/bcm_flashutil public/libs/bcm_boardctl
+	$(MAKE) -C public/apps/scratchpadctl  
+
+.PHONY : public/apps/scratchpadctl
+
+public/apps/scripts: 
+	$(MAKE) -C public/apps/scripts  
+
+.PHONY : public/apps/scripts
+
+public/apps/send_cms_msg: public/libs/cms_msg public/libs/cms_util public/libs/bcm_flashutil public/libs/bcm_boardctl
+ifneq ($(strip $(BUILD_BRCM_CMS)),)
+	$(MAKE) -C public/apps/send_cms_msg  
+else
+	@echo "public/apps/send_cms_msg is skipped (not selected)"
+endif
+
+.PHONY : public/apps/send_cms_msg
+
+public/apps/sendpackets: public/libs/libpcap
+	$(MAKE) -C public/apps/sendpackets  
+
+.PHONY : public/apps/sendpackets
+
+public/apps/simcard: private/libs/simcardctl
+ifneq ($(and $(strip $(BUILD_BRCM_CMS)),$(strip $(BRCM_DRIVER_SIM_CARD))),)
+	$(MAKE) -C public/apps/simcard  
+else
+	@echo "public/apps/simcard is skipped (not selected)"
+endif
+
+.PHONY : public/apps/simcard
+
+public/apps/tcpdump: public/libs/libpcap
+	$(MAKE) -C public/apps/tcpdump  
+
+.PHONY : public/apps/tcpdump
+
+public/apps/tracectl: 
+	$(MAKE) -C public/apps/tracectl  
+
+.PHONY : public/apps/tracectl
+
+public/apps/udp_spd_test: public/libs/bdmf
+ifneq ($(strip $(BUILD_SPDTEST)),)
+	$(MAKE) -C public/apps/udp_spd_test  
+else
+	@echo "public/apps/udp_spd_test is skipped (not selected)"
+endif
+
+.PHONY : public/apps/udp_spd_test
+
+public/apps/wanconf: public/libs/cms_msg public/libs/cms_util public/libs/bcm_flashutil private/libs/rdpactl public/libs/jsonc private/libs/pmd
+	$(MAKE) -C public/apps/wanconf  
+
+.PHONY : public/apps/wanconf
+
+public/apps/wdtctl: 
+ifneq ($(strip $(BUILD_WDTCTL)),)
+	$(MAKE) -C public/apps/wdtctl -f Bcmbuild.mk 
+else
+	@echo "public/apps/wdtctl is skipped (not selected)"
+endif
+
+.PHONY : public/apps/wdtctl
+
+public/libs/alljoyn: public/libs/libcap public/libs/openssl
+	$(MAKE) -C public/libs/alljoyn  
+
+.PHONY : public/libs/alljoyn
+
+public/libs/bcm_boardctl: public/libs/sys_util public/libs/gen_util public/libs/bcm_util
+	$(MAKE) -C public/libs/bcm_boardctl -f Bcmbuild.mk 
+
+.PHONY : public/libs/bcm_boardctl
+
+public/libs/bcm_failsafe_boot: 
+	$(MAKE) -C public/libs/bcm_failsafe_boot -f Bcmbuild.mk 
+
+.PHONY : public/libs/bcm_failsafe_boot
+
+public/libs/bcm_flashutil: public/libs/bcm_boardctl public/libs/bcm_util public/libs/sys_util public/libs/gen_util
+	$(MAKE) -C public/libs/bcm_flashutil -f Bcmbuild.mk 
+
+.PHONY : public/libs/bcm_flashutil
+
+public/libs/bcm_sslconf: public/libs/expat public/libs/openssl
+	$(MAKE) -C public/libs/bcm_sslconf  
+
+.PHONY : public/libs/bcm_sslconf
+
+public/libs/bcm_util: public/libs/sys_util public/libs/gen_util
+	$(MAKE) -C public/libs/bcm_util -f Bcmbuild.mk 
+
+.PHONY : public/libs/bcm_util
+
+public/libs/bdmf: 
+	$(MAKE) -C public/libs/bdmf  
+
+.PHONY : public/libs/bdmf
+
+public/libs/brcmssp_util: 
+	$(MAKE) -C public/libs/brcmssp_util  
+
+.PHONY : public/libs/brcmssp_util
+
+public/libs/cms_msg: public/libs/bcm_util
+ifneq ($(strip $(BUILD_BRCM_CMS)),)
+	$(MAKE) -C public/libs/cms_msg  
+else
+	@echo "public/libs/cms_msg is skipped (not selected)"
+endif
+
+.PHONY : public/libs/cms_msg
+
+public/libs/cms_util: public/libs/bcm_flashutil public/libs/bcm_boardctl public/libs/bcm_util public/libs/gen_util public/libs/sys_util
+ifneq ($(or $(strip $(BUILD_BRCM_CMS)),$(strip $(BUILD_CMS_UTIL))),)
+	$(MAKE) -C public/libs/cms_util -f Bcmbuild.mk 
+else
+	@echo "public/libs/cms_util is skipped (not selected)"
+endif
+
+.PHONY : public/libs/cms_util
+
+public/libs/curl: public/libs/openssl public/libs/nghttp2
+	$(MAKE) -C public/libs/curl  
+
+.PHONY : public/libs/curl
+
+public/libs/d3: 
+	$(MAKE) -C public/libs/d3  
+
+.PHONY : public/libs/d3
+
+public/libs/expat: 
+	$(MAKE) -C public/libs/expat  
+
+.PHONY : public/libs/expat
+
+public/libs/gen_util: 
+	$(MAKE) -C public/libs/gen_util -f Bcmbuild.mk 
+
+.PHONY : public/libs/gen_util
+
+public/libs/gst-plugins-base: 
+	$(MAKE) -C public/libs/gst-plugins-base  
+
+.PHONY : public/libs/gst-plugins-base
+
+public/libs/gst-plugins-good: public/libs/gst-plugins-base
+	$(MAKE) -C public/libs/gst-plugins-good  
+
+.PHONY : public/libs/gst-plugins-good
+
+public/libs/gst-plugins-ugly: public/libs/gst-plugins-base
+	$(MAKE) -C public/libs/gst-plugins-ugly  
+
+.PHONY : public/libs/gst-plugins-ugly
+
+public/libs/httpdshared: 
+	$(MAKE) -C public/libs/httpdshared  
+
+.PHONY : public/libs/httpdshared
+
+public/libs/jpeg: 
+	$(MAKE) -C public/libs/jpeg  
+
+.PHONY : public/libs/jpeg
+
+public/libs/jqplot: 
+	$(MAKE) -C public/libs/jqplot  
+
+.PHONY : public/libs/jqplot
+
+public/libs/jquery: 
+	$(MAKE) -C public/libs/jquery  
+
+.PHONY : public/libs/jquery
+
+public/libs/jsonc: 
+	$(MAKE) -C public/libs/jsonc  
+
+.PHONY : public/libs/jsonc
+
+public/libs/libcap: 
+	$(MAKE) -C public/libs/libcap  
+
+.PHONY : public/libs/libcap
+
+public/libs/libevent: 
+	$(MAKE) -C public/libs/libevent  
+
+.PHONY : public/libs/libevent
+
+public/libs/libnl: 
+	$(MAKE) -C public/libs/libnl -f Bcmbuild.mk 
+
+.PHONY : public/libs/libnl
+
+public/libs/libpcap: 
+	$(MAKE) -C public/libs/libpcap -f Bcmbuild.mk 
+
+.PHONY : public/libs/libpcap
+
+public/libs/libxml2: 
+	$(MAKE) -C public/libs/libxml2  
+
+.PHONY : public/libs/libxml2
+
+public/libs/microhttpd: public/libs/openssl public/libs/curl
+	$(MAKE) -C public/libs/microhttpd  
+
+.PHONY : public/libs/microhttpd
+
+public/libs/miniupnpc: 
+	$(MAKE) -C public/libs/miniupnpc  
+
+.PHONY : public/libs/miniupnpc
+
+public/libs/nghttp2: 
+	$(MAKE) -C public/libs/nghttp2  
+
+.PHONY : public/libs/nghttp2
+
+public/libs/openssl: 
+	$(MAKE) -C public/libs/openssl  
+
+.PHONY : public/libs/openssl
+
+public/libs/popt: 
+	$(MAKE) -C public/libs/popt  
+
+.PHONY : public/libs/popt
+
+public/libs/qrcode: 
+	$(MAKE) -C public/libs/qrcode  
+
+.PHONY : public/libs/qrcode
+
+public/libs/seccomp: 
+	$(MAKE) -C public/libs/seccomp  
+
+.PHONY : public/libs/seccomp
+
+public/libs/sigma: 
+	$(MAKE) -C public/libs/sigma  
+
+.PHONY : public/libs/sigma
+
+public/libs/sqlite: 
+	$(MAKE) -C public/libs/sqlite  
+
+.PHONY : public/libs/sqlite
+
+public/libs/stlport: 
+	$(MAKE) -C public/libs/stlport  
+
+.PHONY : public/libs/stlport
+
+public/libs/strophe: public/libs/openssl public/libs/expat
+	$(MAKE) -C public/libs/strophe  
+
+.PHONY : public/libs/strophe
+
+public/libs/sys_util: 
+	$(MAKE) -C public/libs/sys_util -f Bcmbuild.mk 
+
+.PHONY : public/libs/sys_util
+
+public/libs/tablesorter: 
+	$(MAKE) -C public/libs/tablesorter  
+
+.PHONY : public/libs/tablesorter
+
+public/libs/treetable: 
+	$(MAKE) -C public/libs/treetable  
+
+.PHONY : public/libs/treetable
+
+public/libs/tzdb: 
+	$(MAKE) -C public/libs/tzdb  
+
+.PHONY : public/libs/tzdb
+
+public/libs/uuid: 
+	$(MAKE) -C public/libs/uuid  
+
+.PHONY : public/libs/uuid
+
+public/libs/websockets: public/libs/openssl
+	$(MAKE) -C public/libs/websockets  
+
+.PHONY : public/libs/websockets
+
+

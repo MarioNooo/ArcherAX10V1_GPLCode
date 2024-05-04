@@ -1,0 +1,1218 @@
+<!DOCTYPE html>
+
+<html">
+
+<!--[if lte IE 9]>
+<p style="background-color:red; color:white"><b>Your version of Internet Explorer does not support web sockets.</b></p>
+<![endif]-->
+   <style>
+
+   /* For lossing the focus impression after clicking the GO button */
+   :focus {outline:none;}
+   ::-moz-focus-inner {border:0;}
+
+   body {
+     font-family: Arial, Helvetica, sans-serif
+   }
+
+   /* style for the overall layout */
+   .grid-top {
+      width:80%;
+   }
+   .grid-container {
+      display: grid;
+      grid-template-columns: 50px 135px 110px 80px 80px 110px 135px auto;
+      grid-gap: 0px;
+      text-align: center;
+      font-size: 13px;
+   }
+   .div1-header {
+      grid-column: 2 / span 6;
+      padding-bottom: 25px;
+   }
+   .div23-resultSummaryDownData {
+      grid-column: 3 / span 2;
+   }
+   .div23-resultSummaryUpData {
+      grid-column: 5 / span 2;
+   }
+   .div4-speedometer {
+      grid-column: 2 / span 6;
+      max-height: 215px;
+      height: 0px;
+      overflow-y: hidden;
+      transition: height 0.5s linear;
+   }
+   .div4-speedometer.expanded {
+      height: 215px;
+   }
+   .div5-goButton {
+      grid-column: 4 / span 2;
+      width: 160px;
+      height: 100px;
+      position: relative;
+   }
+   .div5-ssClient, .div5-ssServer {
+      padding-top: 25px;
+   }
+   .div6-optionalTab {
+      padding-top: 10px;
+      text-align: left;
+      grid-column: 2 / span 6;
+   }
+   .div7-optionalPanel {
+      grid-column: 2 / span 6;
+   }
+
+   /* style for the GO button and progress bar */
+   #progressButton {
+      width: 100px;
+      height: 100px;
+      position: absolute;
+      top: 0;
+      left: 30px;
+   }
+   #progressBar {
+      height: 5px;
+      width: 160px;
+      background-color: #ccc;
+      position: relative;
+      overflow: hidden;
+      display: inline-block;
+      z-index: -1;
+      top: 42px;
+   }
+   #progressBarUpstream {
+      position: absolute;
+      top: -20px;
+      -webkit-animation: upstream 2s infinite;
+      animation-timing-function: ease-in;
+      animationPlayState: paused;
+   }
+   #progressBarDownstream {
+      position: absolute;
+      top: -20px;
+      -webkit-animation: downstream 2s infinite;
+      animation-timing-function: ease-in;
+      animationPlayState: paused;
+   }
+
+   #progressBar-upstrip {
+      list-style-type: none;
+      height: 5px;
+      width: 10px;
+      background-color: rgba(50, 200, 50, 1);
+      display: inline-block;
+   }
+   #progressBar-downstrip {
+      list-style-type: none;
+      height: 5px;
+      width: 10px;
+      background-color: rgba(50, 50, 200, 1);
+      display: inline-block;
+   }
+   @-webkit-keyframes downstream {
+      100% {
+         left: -120px;
+      }
+      1% {
+         left: 200px;
+      }
+   }
+   @-webkit-keyframes upstream {
+      1% {
+         left: -120px;
+      }
+      100% {
+         left: 200px;
+      }
+   }
+   .button {
+      background-color: red;
+      width: 100px;
+      height: 100px;
+      border: none;
+      color: white;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+      -webkit-transition-duration: 0.2s; /* Safari */
+      transition-duration: 0.2s;
+      cursor: pointer;
+      font-weight: bold;
+   }
+   #buttonGo {
+      background-color: white;
+      color: black;
+      border: 2px solid #f44336;
+      border-radius: 50%;
+      font-size: 20px;
+   }
+   #buttonGo:hover {
+      background-color: #f44336;
+      color: white !important;
+      border-radius: 50%;
+      box-shadow: 0 8px 16px 0 rgba(0,0,0,0.24),0 6px 20px 0 rgba(0,0,0,0.19);
+   }
+   #buttonGateway, #buttonServer{
+      background-color: white;
+      color: black;
+      border: 2px solid #ccc;
+      border-radius: 12px;
+      width: 110px;
+      height: 50px;
+      font-size: 11px;
+      font-weight: bold;
+   }
+
+   /* style for the setting and result summary tables */
+   .buttonTab {
+      width: 80px;
+      height: 24px;
+      text-align: center;
+      background-color: #ccc;
+      font-size: 11px;
+      padding: 0;
+      color: white;
+      border-radius: 5px 5px 0px 0px;
+      border: rgba(255, 0, 0, 0.25);
+   }
+   .buttonTab:hover {
+      background-color: rgba(255, 0, 0, 0.25) !important;
+   }
+   #ResultHistoryTable {
+      text-align:center;
+      margin-left:auto;
+      margin-right:auto;
+      border-collapse: collapse;
+      table-layout: fixed;
+      width:630px;
+      font-size: 11px;
+   }
+   #ResultHistoryTable td {
+      padding-top: 4px;
+      padding-bottom: 4px;
+      width: 80px;
+      border-bottom: 1px solid #eee;
+   }
+   #ResultHistoryTable tr {
+      text-align: center;
+   }
+   #ResultHistoryTable th {
+      padding-top: 2px;
+      padding-bottom: 2px;
+      cursor: pointer;
+      border-top: 1px solid #ccc;
+      border-bottom: 1px solid #ccc;
+   }
+   #ssSettingsTable {
+      margin-left: auto;
+      margin-right: auto;
+      border-collapse: collapse;
+      width: 650px;
+      font-size: 11px;
+      table-layout: fixed;
+      border: 1px solid rgba(255, 0, 0, 0.25);
+   }
+   #ssSettingsTable td, #ssSettingsTable th {
+      padding-top: 2px;
+      padding-bottom: 2px;
+      padding-left: 10px;
+      padding-right: 10px;
+      width: 25%;
+   }
+   #ssSettingsTable select {
+      width: 100%;
+      font-size: 11px;
+      border-width: 1px solid rgba(255, 0, 0, 0.25);
+      margin: 0;
+      box-shadow: none;
+      margin-right: 0px;
+      padding-right: 0px;
+   }
+   #ssSettingsTable input {
+      width: 138px;
+      font-size: 11px;
+      margin-left: 0;
+      margin-right: 0px;
+      padding-right: 0px;
+      border-radius: 0%;
+      border: 1px solid #bbb;
+      padding-left: 2px;
+   }
+   .ipHistoryInput,.ipHistoryWrapper {
+      position: relative;
+   }
+   .ipHistoryButton {
+      display: block;
+      width: 15px;
+      height: 15px;
+      position: absolute;
+      background-color: #bbb;
+      z-index:1;
+      right: 0px;
+      top: 0;
+      bottom: 0;
+      margin: auto;
+      padding: 3px;
+      border-radius: 0%;
+      text-align: center;
+      color: white;
+      font-weight: bold;
+      font-size: 9px;
+      cursor: pointer;
+      border:none;
+   }
+   .ipHistoryButton:hover {
+      background-color: rgba(255, 0, 0, 0.25) !important;
+   }
+   .dropdown {
+      position: relative;
+      display: inline-block;
+   }
+   .dropdown-content {
+      display: none;
+      position: absolute;
+      width: 100%;
+      z-index: 1;
+   }
+
+   /* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */
+   .show {display:block;}
+
+   </style>
+
+   <head>
+      <meta HTTP-EQUIV='Pragma' CONTENT='no-cache' charset='utf-8'>
+      <script language="javascript" src="util.js"></script>
+
+      <!--[if lt IE 9]><script language="javascript" type="text/javascript" src="excanvas.js"></script><![endif]-->
+      <script class="include" type="text/javascript" src="jquery.js"></script>
+      <script class="include" type="text/javascript" src="gauge2.min.js"></script>
+
+      <script class="code" type="text/javascript">
+
+<!-- hide
+      /* Global variables */
+      var resultHistoryList = '<%ejGetOther(spdsvcInfo, resultHistoList)%>';
+      var results = resultHistoryList.split('|');
+      var webSockets = '<%ejGetOther(sysInfo, buildWebSockets)%>';
+      var key = '<%ejGetOther(sessionKey)%>';
+      var greenStrong = 'rgba(50, 200, 50, 1)';
+      var blueStrong = 'rgba(50, 50, 200, 1)';
+      var progressPercent = 0;
+      var progressStep = 0;
+      var progressInterval;
+      var testDirInProgress;
+
+      $(document).ready(function()
+      {
+         function get_appropriate_ws_url()
+         {
+            var pcol;
+            var u = document.URL;
+
+            if (u.substring(0, 5) == "https") {
+               pcol = 'wss://';
+               u = u.substr(8);
+            } else {
+               pcol = 'ws://';
+               if (u.substring(0, 4) == "http")
+                  u = u.substr(7);
+            }
+
+            u = u.split('/');
+            return pcol + u[0] + ':7681/';
+         }
+
+         function checkInput()
+         {
+            if (document.getElementById('kbps').value > 10000000) {
+               alert('Input "(max)kbps" cannot exceed 10000000');
+               return 0;
+            }
+            return 1;
+         }
+
+         function onClick()
+         {
+            if (checkInput())
+            {
+               if (webSockets == '1') {
+                  /* clear and grey out the top display values on click */
+                  document.getElementById('downValue').innerHTML = '---';
+                  document.getElementById('upValue').innerHTML = '---';
+                  document.getElementById('downValue').style.color = '#aaa';
+                  document.getElementById('upValue').style.color = '#aaa';
+                  startSS(getSelect(document.forms[0].direction));
+               }
+            }
+         }
+
+         function startSS(direction)
+         {
+            // if bothstream is selected, start with downstream first
+            if (direction == 'bothstream')
+               direction = 'downstream';
+            testDirInProgress = direction;
+            animateStart();
+            sendData();
+         }
+
+         // function for submitting user input data to CGI
+         function sendData()
+         {
+            var data = getSelect(document.forms[0].mode) + '|';
+            data += document.getElementById('serverIpAddr').value + '|';
+            data += document.getElementById('tcpPort').value + '|';
+            data += testDirInProgress + '|';
+            data += 'HW|';
+            data += document.getElementById('duration').value + '|';
+            data += document.getElementById('pktLength').value + '|';
+            data += document.getElementById('kbps').value + '|';
+
+            if (getSelect(document.forms[0].mode) == 'client_bw')
+            {
+               data += getSelect(document.forms[0].algo) + '|';
+               data += document.getElementById('steps').value + '|';
+               data += document.getElementById('loss').value + '|';
+               data += document.getElementById('latency').value + '|';
+               data += document.getElementById('lossPercentage').value;
+            }
+            else
+               data += '0|0|0|-1|0';
+
+            if (ws_speed_service.readyState == 1)
+               ws_speed_service.send(data);
+         }
+
+         function animateStart()
+         {
+            document.getElementById('buttonGo').disabled = true;
+            document.getElementById('buttonGo').style.transform = "scale(0.5, 0.5)";
+
+            // reset the gauge to zero
+            gaugePS.update( {
+               value: 0,
+            });
+
+            // update the gauge's color scheme
+            if (testDirInProgress == 'upstream') {
+               colorStrong = greenStrong;
+               document.getElementById('upValue').innerHTML = '---';
+               document.getElementById('upValue').style.color = colorStrong;
+               $("#progressBarUpstream").show();
+               document.getElementById('progressBarUpstream').style.animationPlayState="running";
+            } else {
+               colorStrong = blueStrong;
+               document.getElementById('downValue').innerHTML = "---";
+               document.getElementById('downValue').style.color = colorStrong;
+               $("#progressBarDownstream").show();
+               document.getElementById('progressBarDownstream').style.animationPlayState="running";
+            }
+            animateStartTimer();
+            gaugePS.update({
+               barProgress: true,
+               colorTitle: colorStrong,
+               colorBarProgress: colorStrong,
+               animationDuration: Number(document.getElementById('duration').value) - 50,
+               valueBox : true,
+            });
+            document.getElementById("speedometer").classList.add("expanded");
+            $("#gauge-ps").fadeIn("slow");
+            progressPercent = 0;
+            progressStep = (100 / (+document.getElementById('steps').value + 1)).toFixed(0);
+            document.getElementById('buttonGo').innerHTML = progressPercent + "%";
+            document.getElementById('buttonGo').style.color = '#f44336';
+         }
+
+         function animateStartTimer() {
+            var dirValue;
+            var toggle = 0;
+            if (testDirInProgress == 'upstream') {
+               dirValue = 'upValue';
+            } else {
+               dirValue = 'downValue';
+            }
+            progressInterval = setInterval(function(){
+               if (toggle % 2)
+                  document.getElementById(dirValue).style.color = colorStrong;
+               else
+                  document.getElementById(dirValue).style.color = '#aaa';
+               toggle++;
+            }, 500);
+         }
+
+         function animateStopTimer() {
+            var dirValue;
+            if (testDirInProgress == 'upstream') {
+               dirValue = 'upValue';
+            } else {
+               dirValue = 'downValue';
+            }
+            clearInterval(progressInterval);
+            document.getElementById(dirValue).style.color = colorStrong;
+         }
+
+         function animateInfo(clientName, clientIP, kbps)
+         {
+            if (kbps >= 5000000) {
+               gaugePS.update({
+                  maxValue : 10000,
+                  majorTicks: ['0','1000','2000','3000','4000','5000','6000','7000','8000','9000','10000'],
+               });
+            } else if (kbps > 2500000) {
+               gaugePS.update({
+                  maxValue : 5000,
+                  majorTicks: ['0','500','1000','1500','2000','2500','3000','3500','4000','4500','5000'],
+               });
+            } else if (kbps > 2000000) {
+               gaugePS.update({
+                  maxValue : 2500,
+                  majorTicks: ['0','250','500','750','1000','1250','1500','1750','2000','2250','2500'],
+               });
+            } else if (kbps > 1000000) {
+               gaugePS.update({
+                  maxValue : 2000,
+                  majorTicks: ['0','200','400','600','800','1000','1200','1400','1600','1800','2000'],
+               });
+            } else if (kbps > 500000) {
+               gaugePS.update({
+                  maxValue : 1000,
+                  majorTicks: ['0','100','200','300','400','500','600','700','800','900','1000'],
+               });
+            } else if (kbps > 400000) {
+               gaugePS.update({
+                  maxValue : 500,
+                  majorTicks: ['0','50','100','150','200','250','300','350','400','450','500'],
+               });
+            } else if (kbps > 200000) {
+               gaugePS.update({
+                  maxValue : 400,
+                  majorTicks: ['0','50','100','150','200','250','300','350','400'],
+               });
+            } else if (kbps > 100000) {
+               gaugePS.update({
+                  maxValue : 200,
+                  majorTicks: ['0','20','40','60','80','100','120','140','160','180','200'],
+               });
+            } else {
+               gaugePS.update({
+                  maxValue : 100,
+                  majorTicks: ['0','10','20','30','40','50','60','70','80','90','100'],
+               });
+            }
+            document.getElementById('ssServerIP').innerHTML = document.getElementById('serverIpAddr').value;
+            document.getElementById('ssClientIP').innerHTML = clientIP;
+            document.getElementById('ssClientIntf').innerHTML = clientName;
+            gaugePS.update({
+               title: 'CONNECTING',
+            });
+
+         }
+
+         function animateInProgress(kbps)
+         {
+            gaugePS.value = kbps;
+            progressPercent = +progressPercent + +progressStep;
+            document.getElementById('buttonGo').innerHTML = progressPercent + "%";
+            gaugePS.update( {
+               title: 'PROCESSING',
+            });
+         }
+
+         function animateEnd(rawData)
+         {
+            var finalStep = +document.getElementById('duration').value;
+            var table = document.getElementById("ResultHistoryTable");
+            var row;
+            var goodPut = rawData[2]/1000;
+
+            rawData.splice(6, 3); // remove adjusted received rate, received time, overhead
+
+            setTimeout(function(){
+               gaugePS.value = goodPut;
+               goodPut = goodPut.toFixed(0);
+            }, finalStep);
+
+            setTimeout(function(){
+               document.getElementById('buttonGo').innerHTML = "100%";
+               if (rawData[6] == 'upstream') {
+                  document.getElementById('upValue').innerHTML = goodPut;
+                  document.getElementById('progressBarUpstream').style.animationPlayState="paused";
+                  $("#progressBarUpstream").hide();
+               } else {
+                  document.getElementById('downValue').innerHTML = goodPut;
+                  document.getElementById('progressBarDownstream').style.animationPlayState="paused";
+                  $("#progressBarDownstream").hide();
+               }
+               if (table.rows.length > 10) {
+                  table.deleteRow(table.rows.length-1);
+               }
+               row = table.insertRow(1);
+               for (i=0; i < (rawData.length-1); i++) {
+                  cell = row.insertCell(i);
+                  cell.innerHTML = rawData[i+1];
+               }
+               gaugePS.update( {
+                  title: 'COMPLETED',
+               });
+               animateStopTimer(rawData[6]);
+            }, finalStep * 2);
+
+            setTimeout(function(){
+               // if the request was bothstream, check if we need to do the remaining stream
+               if ((getSelect(document.forms[0].direction) == 'bothstream') &&
+                   (rawData[6] == 'downstream')) {
+                  startSS('upstream');
+               } else {
+                  gaugePS.update({
+                     valueBox: false,
+                  });
+                  $("#gauge-ps").fadeOut("slow");
+                  document.getElementById('buttonGo').style.transform = 'none';
+                  document.getElementById('buttonGo').disabled = false;
+                  document.getElementById('buttonGo').innerHTML = 'GO';
+                  document.getElementById('buttonGo').style.color = 'black';
+                  document.getElementById("speedometer").classList.remove('expanded');
+                  saveIpHistory(document.getElementById('serverIpAddr').value);
+               }
+            }, ((finalStep * 2) + 2000));
+         }
+
+         function animateAbort()
+         {
+            $("#progressBarUpstream").hide();
+            $("#progressBarDownstream").hide();
+            document.getElementById('progressBarUpstream').style.animationPlayState="paused";
+            document.getElementById('progressBarDownstream').style.animationPlayState="paused";
+            animateStopTimer('upstream');
+            animateStopTimer('downstream');
+            gaugePS.update({
+               valueBox: false,
+            });
+            $("#gauge-ps").fadeOut("slow");
+            document.getElementById('buttonGo').style.transform = 'none';
+            document.getElementById('buttonGo').disabled = false;
+            document.getElementById('buttonGo').innerHTML = 'GO';
+            document.getElementById('buttonGo').style.color = 'black';
+            document.getElementById("speedometer").classList.remove('expanded');
+            document.getElementById('downValue').innerHTML = '---';
+            document.getElementById('upValue').innerHTML = '---';
+            document.getElementById('downValue').style.color = '#aaa';
+            document.getElementById('upValue').style.color = '#aaa';
+         }
+
+         function showServer()
+         {
+            document.getElementById('settingServer').style.backgroundColor = 'rgba(255, 0, 0, 0.25)';
+            document.getElementById('settingServer').style.color = 'black';
+            document.getElementById('settingTraffic').style.backgroundColor = '#ccc';
+            document.getElementById('settingTraffic').style.color = 'white';
+            document.getElementById('settingAlg').style.backgroundColor = '#ccc';
+            document.getElementById('settingAlg').style.color = 'white';
+            $('#tr_server_ip').show();
+            $('#tr_server_port').show();
+            $('#tr_traffic_dir').hide();
+            $('#tr_traffic_len').hide();
+            $('#tr_traffic_max').hide();
+            $('#tr_traffic_dur').hide();
+            $('#tr_alg_mode').hide();
+            $('#tr_alg_type').hide();
+            $('#tr_alg_steps').hide();
+            $('#tr_alg_loss').hide();
+            $('#tr_alg_latency').hide();
+            $('#tr_alg_percent').hide();
+         }
+
+         function showTraffic()
+         {
+            document.getElementById('settingServer').style.backgroundColor = '#ccc';
+            document.getElementById('settingServer').style.color = 'white';
+            document.getElementById('settingTraffic').style.backgroundColor = 'rgba(255, 0, 0, 0.25)';
+            document.getElementById('settingTraffic').style.color = 'black';
+            document.getElementById('settingAlg').style.backgroundColor = '#ccc';
+            document.getElementById('settingAlg').style.color = 'white';
+            $('#tr_server_ip').hide();
+            $('#tr_server_port').hide();
+            $('#tr_traffic_dir').show();
+            $('#tr_traffic_len').show();
+            $('#tr_traffic_max').show();
+            $('#tr_traffic_dur').show();
+            $('#tr_alg_mode').hide();
+            $('#tr_alg_type').hide();
+            $('#tr_alg_steps').hide();
+            $('#tr_alg_loss').hide();
+            $('#tr_alg_latency').hide();
+            $('#tr_alg_percent').hide();
+         }
+
+         function showAlg()
+         {
+            document.getElementById('settingServer').style.backgroundColor = '#ccc';
+            document.getElementById('settingServer').style.color = 'white';
+            document.getElementById('settingTraffic').style.backgroundColor = '#ccc';
+            document.getElementById('settingTraffic').style.color = 'white';
+            document.getElementById('settingAlg').style.backgroundColor = 'rgba(255, 0, 0, 0.25)';
+            document.getElementById('settingAlg').style.color = 'black';
+            $('#tr_server_ip').hide();
+            $('#tr_server_port').hide();
+            $('#tr_traffic_dir').hide();
+            $('#tr_traffic_len').hide();
+            $('#tr_traffic_max').hide();
+            $('#tr_traffic_dur').hide();
+            $('#tr_alg_mode').show();
+            showBwParam();
+         }
+
+         if (typeof MozWebSocket != 'undefined') {
+            ws_speed_service = new MozWebSocket(get_appropriate_ws_url(), 'speed-service');
+         } else {
+            ws_speed_service = new WebSocket(get_appropriate_ws_url(), 'speed-service');
+         }
+
+         try {
+            ws_speed_service.onopen = function () {
+   	        // send session key to validate session
+   	        ws_speed_service.send('sessionKey=' + key);
+            }
+            ws_speed_service.onmessage = function (msg) {
+               // msg.data contains the data rate being tested
+               // console.log ('msg.data = ' + msg.data);
+               var rawData = msg.data.split(' ');
+               if (rawData[0] == "Data") {
+                  animateInProgress(rawData[1]/1000);
+               } else if (rawData[0] == "Info") {
+                  var scale = document.getElementById('kbps').value;
+                  if (scale == 0) {
+                     var direction = getSelect(document.forms[0].direction);
+                     if (direction == 'bothstream') {
+                        // adjust the scale of the gauge to the max of the
+                        // upstream/downstream rates so that the scale does not
+                        // change between upstream and downstream tests
+                        scale = Math.max(rawData[3], rawData[4]);
+                     } else if (direction == 'upstream')
+                        scale = rawData[3];
+                     else
+                        scale = rawData[4];
+                  }
+                  animateInfo(rawData[1], rawData[2], scale);
+               } else if (rawData[0] == "Completed") {
+                  animateEnd(rawData);
+               } else {
+                  animateAbort();
+                  alert("Speed Service Test failed to start!\n" +
+                        "Please check your settings");
+               }
+            }
+         } catch(exception) {
+            alert('<p>Error' + exception);
+         }
+
+         $("#gauge-ps").hide();
+         $("#progressBarUpstream").hide();
+         $("#progressBarDownstream").hide();
+
+         var gaugePS = new RadialGauge({
+            renderTo: 'gauge-ps',
+            width: 250,
+            height: 250,
+            units: 'Mbps',
+            fontUnitsSize: 16,
+            borders: false,
+            borderShadowWidth: 0,
+            fontTitleSize: 17,
+
+            // stroke/ticks settings
+            minValue: 0,
+            maxValue: 1000,
+            strokeTicks: true,
+            majorTicks: ['0','100','200','300','400','500','600','700','800','900','1000'],
+            highlights: false,
+            minorTicks: 5,
+            fontNumbersSize: 15,
+
+            // Color Box settings
+            valueBox: false,
+            valueInt: 0,
+            valueDec: 2,
+            colorValueText: "#000",
+            colorValueBoxRect: "#fff",
+            colorValueBoxRectEnd: "#fff",
+            colorValueBoxBackground: "#fff",
+            colorValueBoxShadow: "#fff",
+
+            // Needle settings
+            needle: true,
+            needleShadow: false,
+            needleType: "line",
+            needleStart: 0,
+            needleEnd: 95,
+            needleWidth: 2,
+            needleCircleSize: 5,
+            colorNeedle: 'rgba(200, 50, 50, 1)',
+            colorNeedleEnd: 'rgba(200, 50, 50, 1)',
+
+            // Progress bar settings
+            barProgress: true,
+            barWidth: 10,
+
+            // Animation settings
+            animationDuration: 0,
+            animationRule: "linear",
+            animatedValue: true,
+         });
+
+         gaugePS.draw();
+
+         showServer();
+         document.getElementById('ssSettings').style.display = 'block';
+
+         // bind click event to buttons
+         $('#buttonGo').click(onClick);
+         $('#settingServer').click(showServer);
+         $('#settingTraffic').click(showTraffic);
+         $('#settingAlg').click(showAlg);
+      });
+
+      function frmLoad() {
+         var testParams = '<%ejGetOther(spdsvcInfo, testParams)%>';
+         var params = testParams.split('|');
+
+         document.getElementById('mode').value = params[0];
+         document.getElementById('serverIpAddr').value = params[1];
+         document.getElementById('tcpPort').value = params[2];
+         document.getElementById('direction').value = 'bothstream';
+         document.getElementById('duration').value = params[5];
+         document.getElementById('pktLength').value = params[6];
+         document.getElementById('kbps').value = params[7];
+         document.getElementById('algo').value = params[8];
+         document.getElementById('steps').value = params[9];
+         document.getElementById('loss').value = params[10];
+         document.getElementById('latency').value = params[11];
+         document.getElementById('lossPercentage').value = params[12];
+      }
+
+      function showAlgoParam()
+      {
+         if (getSelect(document.forms[0].algo) == 'Bin')
+         {
+            $('#tr_alg_steps').show();
+            $('#tr_alg_loss').show();
+            $('#tr_alg_latency').show();
+            $('#tr_alg_percent').hide();
+         }
+         else if (getSelect(document.forms[0].algo) == 'Fast')
+         {
+            $('#tr_alg_steps').show();
+            $('#tr_alg_loss').show();
+            $('#tr_alg_latency').hide();
+            $('#tr_alg_percent').hide();
+         }
+         else if (getSelect(document.forms[0].algo) == 'Ramp')
+         {
+            $('#tr_alg_steps').show();
+            $('#tr_alg_loss').hide();
+            $('#tr_alg_latency').show();
+            $('#tr_alg_percent').show();
+         }
+         else if (getSelect(document.forms[0].algo) == 'RxRate')
+         {
+            $('#tr_alg_steps').hide();
+            $('#tr_alg_loss').hide();
+            $('#tr_alg_latency').hide();
+            $('#tr_alg_percent').hide();
+         }
+      }
+
+      function showBwParam()
+      {
+         if (getSelect(document.forms[0].mode) == "client_bw")
+         {
+            $('#tr_alg_type').show();
+            showAlgoParam();
+         }
+         else
+         {
+            $('#tr_alg_type').hide();
+            $('#tr_alg_steps').hide();
+            $('#tr_alg_loss').hide();
+            $('#tr_alg_latency').hide();
+            $('#tr_alg_percent').hide();
+         }
+      }
+
+      function buildHistoryTable()
+      {
+         var i = 0;
+         for ( i = results.length-1; i >= 0; i-- ) {
+            if (results[i] != '') {
+               var result = results[i].split(';');
+               var goodPut = result[1]/1000;
+               result.splice(5, 3); // skip adjusted received rate, received time, overhead
+               goodPut = goodPut.toFixed(0);
+               document.writeln('<tr>');
+               document.writeln('<td>' + result[0] + '</td>');   // runtime
+               document.writeln('<td>' + result[1] + '</td>');   // goodput
+               document.writeln('<td>' + result[2] + '</td>');   // payload rate
+               document.writeln('<td>' + result[3] + '</td>');   // loss packets
+               document.writeln('<td>' + result[4] + '</td>');   // avgLatency
+               document.writeln('<td>' + result[5] + '</td>');   // direction
+               document.writeln('</tr>');
+               if ((document.getElementById('downValue').innerHTML == 0) &&
+                   (result[5] == "downstream")) {
+                  document.getElementById('downValue').innerHTML = goodPut;
+               }
+               if ((document.getElementById('upValue').innerHTML == 0) &&
+                   (result[5] == "upstream")) {
+                  document.getElementById('upValue').innerHTML = goodPut;
+               }
+            }
+         }
+      }
+
+      function sortTable(n) {
+        var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+        table = document.getElementById("ResultHistoryTable");
+        switching = true;
+        //Set the sorting direction to ascending:
+        dir = "asc";
+        /*Make a loop that will continue until
+        no switching has been done:*/
+        while (switching) {
+          //start by saying: no switching is done:
+          switching = false;
+          rows = table.rows;
+          /*Loop through all table rows (except the
+          first, which contains table headers):*/
+          for (i = 1; i < (rows.length - 1); i++) {
+            //start by saying there should be no switching:
+            shouldSwitch = false;
+            /*Get the two elements you want to compare,
+            one from current row and one from the next:*/
+            x = rows[i].getElementsByTagName("TD")[n];
+            y = rows[i + 1].getElementsByTagName("TD")[n];
+            /*check if the two rows should switch place,
+            based on the direction, asc or desc:*/
+            if (dir == "asc") {
+              if ((isNaN(x.innerHTML) && isNaN(y.innerHTML)) && (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) ||
+                  (Number(x.innerHTML) > Number(y.innerHTML))) {
+                //if so, mark as a switch and break the loop:
+                shouldSwitch= true;
+                break;
+              }
+            } else if (dir == "desc") {
+              if ((isNaN(x.innerHTML) && isNaN(y.innerHTML)) && (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) ||
+                  (Number(x.innerHTML) < Number(y.innerHTML))) {
+                //if so, mark as a switch and break the loop:
+                shouldSwitch = true;
+                break;
+              }
+            }
+          }
+          if (shouldSwitch) {
+            /*If a switch has been marked, make the switch
+            and mark that a switch has been done:*/
+            rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+            switching = true;
+            //Each time a switch is done, increase this count by 1:
+            switchcount ++;
+          } else {
+            /*If no switching has been done AND the direction is "asc",
+            set the direction to "desc" and run the while loop again.*/
+            if (switchcount == 0 && dir == "asc") {
+              dir = "desc";
+              switching = true;
+            }
+          }
+         }
+      }
+
+      function sortSelect(selElem) {
+         var tmpAry = new Array();
+         for (var i=0;i<selElem.options.length;i++) {
+            tmpAry[i] = new Array();
+            tmpAry[i][0] = selElem.options[i].text;
+            tmpAry[i][1] = selElem.options[i].value;
+         }
+         tmpAry.shift();
+         tmpAry.sort();
+         while (selElem.options.length > 0) {
+            selElem.options[0] = null;
+         }
+         for (var i=0;i<tmpAry.length;i++) {
+            var op = new Option(tmpAry[i][0], tmpAry[i][1]);
+            selElem.options[i] = op;
+         }
+
+         var newOption = document.createElement("option")
+         newOption.textContent = "Past IP addresses:";
+         newOption.value = 0;
+         selElem.prepend(newOption);
+
+      }
+
+      function listIpHistory() {
+         document.getElementById('ipHistory').classList.toggle("show");
+         document.getElementById('ipHistoryList').selectedIndex = 0;
+         if (document.getElementById('ipHistory').classList.contains('show')) {
+            document.getElementById('ipHistoryButton').style.color = 'black';
+            document.getElementById('ipHistoryButton').style.backgroundColor = 'rgba(255, 0, 0, 0.25)';
+         } else {
+            document.getElementById('ipHistoryButton').style.color = 'white';
+            document.getElementById('ipHistoryButton').style.backgroundColor = '#bbb';
+         }
+      }
+
+      function saveIpHistory(ipAddr) {
+         var list = document.getElementById("ipHistoryList");
+         var newOption;;
+
+         for (var i=0; i<list.length; i++) {
+            if (list[i].value == ipAddr)
+               return;
+         }
+         newOption = document.createElement("option")
+         newOption.textContent = ipAddr;
+         newOption.value = ipAddr;
+         list.appendChild(newOption);
+
+         sortSelect(list);
+      }
+
+      function selectIpHistory(ipAddr) {
+         document.getElementById('serverIpAddr').value = ipAddr;
+      }
+
+      window.onclick = function(event) {
+        if ((event.target.name != 'ipHistoryButton') &&
+            (event.target.name != 'ipHistoryList')) {
+          var dropdowns = document.getElementsByClassName("dropdown-content");
+          var i;
+          for (i = 0; i < dropdowns.length; i++) {
+            var openDropdown = dropdowns[i];
+            if (openDropdown.classList.contains('show')) {
+              openDropdown.classList.remove('show');
+            }
+          }
+         document.getElementById('ipHistoryButton').style.color = 'white';
+         document.getElementById('ipHistoryButton').style.backgroundColor = '#bbb';
+        }
+      }
+
+      // done hiding -->
+      </script>
+</head>
+
+<body onLoad='frmLoad()'>
+<div class='gird-top'>
+   <div class="grid-container">
+
+      <!-- 1st row -->
+      <div></div>
+      <div class="div1-header">
+         <h1>Speed Service Diagnostic Test</h1>
+      </div>
+      <div></div>
+
+      <!-- 2nd row -->
+      <div></div>
+      <div></div>
+      <div class="div23-resultSummaryDownData">
+         <b><font color=blue size=3>RECEIVE</font> Mbps</b>
+      </div>
+      <div class="div23-resultSummaryUpData">
+         <b><font color=green size=3>TRANSMIT</font> Mbps</b>
+      </div>
+      <div></div>
+      <div></div>
+
+      <!-- 3rd row -->
+      <div></div>
+      <div></div>
+      <div class="div23-resultSummaryDownData" id='downValue' style="color: #aaa; font-size: 50px">0</div>
+      <div class="div23-resultSummaryUpData" id='upValue' style="color: #aaa; font-size: 50px">0</div>
+      <div></div>
+      <div></div>
+
+      <!-- 4th row -->
+      <div></div>
+      <div class="div4-speedometer" id="speedometer"><canvas id="gauge-ps"></canvas></div>
+      <div></div>
+
+      <!-- 5th row -->
+      <div></div>
+      <div></div>
+      <div class="div5-ssClient">
+         <button id='buttonGateway'>
+            <ul style="list-style-type: none; margin: 0; padding: 0;">
+               <li>Gateway</li>
+               <li id='ssClientIP' style="font-weight: normal"></li>
+               <li id='ssClientIntf' style="font-weight: normal"></li>
+            </ul>
+         </button>
+      </div>
+      <div class="div5-goButton">
+         <div id="progressButton"><button class='button' id='buttonGo'>GO</button></div>
+         <div id="myPrgressPercent"></div>
+         <div id="progressBar">
+            <ul id="progressBarUpstream">
+               <li id="progressBar-upstrip"></li>
+               <li id="progressBar-upstrip"></li>
+               <li id="progressBar-upstrip"></li>
+               <li id="progressBar-upstrip"></li>
+            </ul>
+            <ul id="progressBarDownstream">
+               <li id="progressBar-downstrip"></li>
+               <li id="progressBar-downstrip"></li>
+               <li id="progressBar-downstrip"></li>
+               <li id="progressBar-downstrip"></li>
+            </ul>
+         </div>
+      </div>
+      <div class="div5-ssServer">
+         <button id='buttonGateway'>
+            <ul style="list-style-type: none; margin: 0; padding: 0;">
+               <li>Speed Service Server</li>
+               <li id='ssServerIP' style="font-weight: normal"></li>
+            </ul>
+         </button>
+      </div>
+      <div></div>
+      <div></div>
+
+      <!-- 6th row -->
+      <div></div>
+      <div class="div6-optionalTab">
+         <button class='button buttonTab' id='settingServer' style='color:black; background-color: rgba(255, 0, 0, 0.25)'>Server</button>
+         <button class='button buttonTab' id='settingTraffic'>Traffic</button>
+         <button class='button buttonTab' id='settingAlg'>Algorithm</button>
+      </div>
+      <div></div>
+
+      <!-- 7th row -->
+      <div></div>
+      <div class="div7-optionalPanel">
+         <div id="ssSettings"style="width:100%; margin:0%; text-align:left; display:none">
+            <form>
+               <table id='ssSettingsTable'>
+                  <tr style="height:12px"><td></td><td></td><td></td><td></td></tr>
+                  <tr id='tr_server_ip'>
+                     <td>Server Address:</td>
+                     <td>
+                        <div class='ipHistoryWrapper'>
+                           <input autocomplete='off' type='text' id='serverIpAddr' required class='ipHistoryInput'>
+                           <button name='ipHistoryButton' id='ipHistoryButton' class="ipHistoryButton" type="button" onclick='listIpHistory()'>H</button>
+                           <div id='ipHistory' class='dropdown-content'>
+                              <select size="6" name='ipHistoryList' id='ipHistoryList' class='dropdown-content-select' onchange='selectIpHistory(this.value)'>
+                                 <option value='0'>Past IP addresses:</option>
+                              </select>
+                           </div>
+                        </div>
+                     </td>
+                     <td></td><td></td>
+                  </tr>
+                  <tr id='tr_server_port'>
+                     <td>Server Port:</td>
+                     <td><input type='text' id='tcpPort'></td>
+                     <td></td><td></td>
+                  </tr>
+                  <tr id='tr_traffic_dir'>
+                     <td>Direction:</td>
+                     <td>
+                        <select id='direction'>
+                           <option value='bothstream'>Both</option>
+                           <option value='downstream'>Receive</option>
+                           <option value='upstream'>Transmit</option>
+                        </select>
+                     </td>
+                     <td></td><td></td>
+                  </tr>
+                  <tr id='tr_traffic_len'>
+                     <td>UDP Payload Length:</td>
+                     <td><input type='text' id='pktLength'></td>
+                     <td></td><td></td>
+                  </tr>
+                  <tr id='tr_traffic_max'>
+                     <td>Maximum kbps:</td>
+                     <td><input type='text' id='kbps'></td>
+                     <td></td><td></td>
+                  </tr>
+                  <tr id='tr_traffic_dur'>
+                     <td>Step Duration (ms):</td>
+                     <td><input type='text' id='duration'></td>
+                     <td></td><td></td>
+                  </tr>
+                  <tr id='tr_alg_mode'>
+                     <td>Test mode:</td>
+                     <td>
+                        <select id='mode' onchange='showBwParam()'>
+                           <option value='client_bw'>bw</option>
+                           <option value='client_send'>send</option>
+                        </select>
+                     </td>
+                     <td></td><td></td>
+                  </tr>
+                  <tr id='tr_alg_type'>
+                     <td>Algorithm:</td>
+                     <td>
+                        <select id='algo' onchange='showAlgoParam()'>
+                           <option value='Fast'>Fast</option>
+                           <option value='Bin'>Bin</option>
+                           <option value='Ramp'>Ramp</option>
+                           <option value='RxRate'>RxRate</option>
+                        </select>
+                     </td>
+                     <td></td><td></td>
+                  </tr>
+                  <tr id='tr_alg_steps'>
+                     <td>Max Steps:</td>
+                     <td><input type='text' id='steps'></td>
+                     <td></td><td></td>
+                  </tr>
+                  <tr id='tr_alg_latency'>
+                     <td>Latency Tolerance Percentage:</td>
+                     <td><input type='text' id='latency'></td>
+                     <td></td><td></td>
+                  </tr>
+                  <tr id='tr_alg_loss'>
+                     <td>Allowed Loss Percentage:</td>
+                     <td><input type='text' id='loss'></td>
+                     <td></td><td></td>
+                  </tr>
+                  <tr id='tr_alg_percent'>
+                     <td>Maximum Loss Percentage:</td>
+                     <td><input type='text' id='lossPercentage'></td>
+                     <td></td><td></td>
+                  </tr>
+                  <tr>
+                     <td colspan="4" height="17px">Result History:</td>
+                  </tr>
+                  <tr>
+                     <td colspan="4">
+                        <table id='ResultHistoryTable' >
+                           <tr>
+                              <th onclick="sortTable(0)" style="cursor: pointer; width:150px">Runtime</th>
+                              <th onclick="sortTable(1)">Good Put (Kbps)</th>
+                              <th onclick="sortTable(2)">Payload Rate (Kbps)</th>
+                              <th onclick="sortTable(3)">Loss Packets</th>
+                              <th onclick="sortTable(4)">Average Latency (us)</th>
+                              <th onclick="sortTable(5)">Direction</th>
+                           </tr>
+                           <script language="javascript">buildHistoryTable();</script>
+                        </table>
+                     </td>
+                  </tr>
+                  <tr height="12px"><td></td><td></td><td></td><td></td></tr>
+               </table>
+            </form>
+         </div>
+      </div>
+      <div></div>
+
+   </div>
+</div>
+</body>
+</html>
+

@@ -1,0 +1,11 @@
+prefix=/home/tp/code/ax10v1_GPL/bcm675x/bcm963xx/bcmdrivers/broadcom/net/wl/impl59/main/components/opensource/jsonc/installbin
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: json-c
+Description: JSON implementation in C
+Version: 0.11
+Requires: 
+Libs:  -L${libdir} -ljson-c
+Cflags: -I${includedir}/json-c

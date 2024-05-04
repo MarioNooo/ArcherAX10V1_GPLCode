@@ -1,0 +1,3 @@
+kernel/../../bcmdrivers/broadcom/char/bpm/bcm963178/bcm_bpm.ko
+kernel/../../bcmdrivers/broadcom/char/cleds/bcm963178/bcm_cleds.ko
+kernel/../../bcmdrivers/opensource/char/plat-bcm/bcm963178/blxargs.ko

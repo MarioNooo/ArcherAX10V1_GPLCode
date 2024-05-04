@@ -1,0 +1,207 @@
+<html>
+   <head>
+      <meta HTTP-EQUIV='Pragma' CONTENT='no-cache'>
+      <link rel="stylesheet" href='stylemain.css' type='text/css'>
+         <link rel="stylesheet" href='colors.css' type='text/css'>
+            <script language="javascript" src="util.js"></script>
+            <script language="javascript">
+
+<!-- hide
+var wan = <%ejGetOther(wan_select_data)%>;
+var type = Object.keys(wan["rates"]);
+var sessionKey='<%ejGetOther(sessionKey)%>';
+
+function loadXMLDoc(url) {
+    var xmlhttp = new XMLHttpRequest();
+
+    xmlhttp.onreadystatechange = function() {
+        if (xmlhttp.readyState == XMLHttpRequest.DONE) {
+           if (xmlhttp.status == 200) {
+               var res =  xmlhttp.responseText.split('/');
+               if (res[0] != "0")
+                   alert("Error setting configuration in NVRAM: " + res[0]);
+               else {
+                  var url = '/rebootinfo.cgi?sessionKey=' + res[1];
+                  window.location = url;
+               }
+
+           }
+           else if (xmlhttp.status == 400) {
+              alert('There was an error 400');
+           }
+           else {
+               alert('something else other than 200 was returned');
+           }
+        }
+    };
+
+    xmlhttp.open("GET", url, true);
+    xmlhttp.send();
+}
+
+function createOption(value, selected) {
+    el = document.createElement('option');
+    el.value = value;
+    el.innerHTML = value;
+    el.selected = selected;
+    return el;
+}
+
+function is_ae_mac_selected() {
+   return document.forms[0].emacs.selectedIndex == wan.ae_emac;
+}
+
+function is_gbe(wan_selected) {
+    /* DUALWAN
+    var el = document.getElementById('dualwan');
+    var dualwan = el.checked;
+    */ var dualwan = false;
+
+    return (wan_selected == "GBE" || dualwan);
+}
+    
+function create_rates(wan_selected) {
+    rates = wan["rates"][wan_selected];
+    if (is_gbe(wan_selected) && !is_ae_mac_selected())
+        rates = {};
+    if (!rates)
+        rates = {};
+    createOptions('rates', rates, wan.rate_selected);
+}
+
+function create_emacs(wan_selected) {
+    if (is_gbe(wan_selected))
+        createOptions('emacs', wan.emacs, wan.emac_selected);
+    else
+        createOptions('emacs', [], false);
+}
+
+function createOptions(where, list, selected) {
+    var el = document.getElementById(where);
+    el.innerHTML = '';
+    var i = 0;
+    for ( i = 0; i < list.length; i++ ) {
+        el.appendChild(createOption(list[i], list[i] == selected));
+    }
+}
+
+function frmLoad() {
+    function redraw_gbe() {
+        var el_type = document.getElementById('types');
+        var wan_selected = el_type.options[el_type.selectedIndex].value;
+        create_rates(wan_selected);
+    }
+    function redraw() {
+        var el_type = document.getElementById('types');
+        var wan_selected = el_type.options[el_type.selectedIndex].value;
+        create_emacs(wan_selected);
+        create_rates(wan_selected);
+    }
+    document.getElementById('types').addEventListener('change', redraw);
+    document.getElementById('emacs').addEventListener('change', redraw_gbe);
+    /* DUALWAN
+    document.getElementById('dualwan').addEventListener('click', redraw);
+    document.getElementById('dualwan_dis').addEventListener('click', redraw);
+    
+    var el = document.getElementById('dualwan');
+    el.checked = wan.dualwan;
+    var el_dis = document.getElementById('dualwan_dis');
+    el_dis.checked = !wan.dualwan;
+    */
+
+    create_emacs(wan.wan_selected);
+    create_rates(wan.wan_selected);
+}
+
+function btnApply() {
+   var loc = 'wan_select_cfg.cmd?';
+
+   with ( document.forms[0] ) {
+       var idx = types.selectedIndex;
+       loc += '&type=' + idx;
+       var idx = rates.selectedIndex;
+       loc += '&rate=' + idx;
+       var idx = emacs.selectedIndex;
+       loc += '&emac=' + idx;
+       /* DUALWAN
+       loc += '&dualwan=' + (dualwan[1].checked ? '1' : '0');
+       */
+   }
+
+   loadXMLDoc(loc);
+}
+
+// done hiding -->
+</script>
+   </head>
+   <body onLoad='frmLoad()'>
+      <blockquote>
+         <form>
+            <b>WAN mode - Configuration<br>
+            </b>
+            <br>
+            WAN mode for this device is saved in NVRAM.
+            <br/>
+            <br/>
+            Select the desired mode and click "Apply/Save" to configure and reboot into the new mode.<br/>
+            <br/>
+
+            <table border="0" cellpadding="0" cellspacing="0">
+              <tr>
+                <td width=240>Type:</td>
+	        <td><select id='types'>
+	              <script language="javascript">
+<!-- hide
+{
+   for ( var i = 0; i < type.length; i++ ) {
+      if ( type[i] == wan['wan_selected'] )
+         document.write("  <option value='" + type[i] + "' selected>");
+      else
+         document.write("  <option value='" + type[i] + "'>");
+      document.writeln(type[i]);
+   }
+}
+// done hiding -->
+</script>
+                      </select></td>
+                 </tr>
+                 <tr></tr>
+            </table>
+            <br>
+            <table border="0" cellpadding="0" cellspacing="0">
+              <tr>
+                <td width=240>Rate:</td>
+	        <td><select id='rates'>
+                </select></td>
+                 </tr>
+                 <tr></tr>
+            </table>
+
+            <br>
+            <table border="0" cellpadding="0" cellspacing="0">
+              <tr>
+                <td width=240>GBE mac:</td>
+	        <td><select id='emacs'>
+                </select></td>
+                 </tr>
+                 <tr></tr>
+            </table>
+
+            <!--- DUALWAN
+            <br>
+            <table border="0" cellpadding="0" cellspacing="0">
+               <tr>
+                  <td width="240">DualWAN</td>
+                  <td><input name='dualwan' id='dualwan_dis' type='radio'>Disable</td>
+                  <td><input name='dualwan' id='dualwan' type='radio'>Enable</td>
+               </tr>
+            </table>
+            -->
+            <br>
+            <p align="center">
+               <input type='button' onClick='btnApply()' value='Apply/Save'>
+            </P>
+         </form>
+      </blockquote>
+   </body>
+</html>
